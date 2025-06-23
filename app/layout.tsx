@@ -2,14 +2,14 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import BottomNav from "@/components/bottom-nav"
 import { ThemeProvider } from "@/components/theme-provider"
-import { PlayerProvider } from "@/contexts/player-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Hallow App Clone",
-  description: "Frontend clone of Hallow app screens",
+  title: "App de Orações",
+  description: "Seu app de orações e meditações.",
     generator: 'v0.dev'
 }
 
@@ -19,15 +19,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-        <PlayerProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-            <div className="md:max-w-sm md:mx-auto md:shadow-lg md:overflow-hidden md:h-[800px] border md:border-gray-300">
-              {children}
-            </div>
-          </ThemeProvider>
-        </PlayerProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <div className="flex flex-col min-h-screen">
+            <main className="flex-grow pb-16"> {children}</main>
+            <BottomNav />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )
