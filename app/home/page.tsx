@@ -1,25 +1,20 @@
-"use client"
-
-import { useState } from "react"
-import HomeFilterHeader from "@/components/home/home-filter-header"
+import HomeHeader from "@/components/home/home-header"
 import MainBanner from "@/components/home/main-banner"
 import QuickAccessIcons from "@/components/home/quick-access-icons"
 import ChallengeBanner from "@/components/home/challenge-banner"
 import HorizontalScrollSection from "@/components/home/horizontal-scroll-section"
 import QuoteSection from "@/components/home/quote-section"
-import type { AudioTrack } from "@/types" // Assuming this type can be adapted or is general enough
+// import MorningRoutinesSection from "@/components/home/morning-routines-section"; // Será substituído
+import type { AudioTrack } from "@/types"
 import SingleCardFeature from "@/components/home/single-card-feature"
 import ExploreCategoryCard from "@/components/home/explore-category-card"
 import HorizontalGridScrollSection from "@/components/home/horizontal-grid-scroll-section"
 import MagisteriumBanner from "@/components/home/magisterium-banner"
+// import GridSection from "@/components/home/grid-section"; // Será substituído por HorizontalGridScrollSection para Orações Infantis
 import FinalSection from "@/components/home/final-section"
-// VerticalListItem is no longer directly used for the modified sections
-// import VerticalListItem from "@/components/home/vertical-list-item"
+import VerticalListItem from "@/components/home/vertical-list-item"
 
-// --- DADOS (mantidos e adaptados para a interface de HorizontalGridScrollSectionItem) ---
-// A interface HorizontalGridScrollSectionItem (implícita pelo uso em HorizontalGridScrollSection)
-// espera: id, imageUrl, title, subtitle, details, link
-
+// Placeholder data for sections (mantendo os dados existentes e adicionando/ajustando para as seções modificadas)
 const corpusChristiItems: AudioTrack[] = [
   {
     id: "cc1",
@@ -31,10 +26,10 @@ const corpusChristiItems: AudioTrack[] = [
   },
   {
     id: "cc2",
-    title: "Amor de Deus na Eucaristia",
+    title: "Amor de Deus na Euc...",
     subCategory: "Livro II, Capítulo 2",
     duration: "8-11 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=160&height=160",
     type: "audio",
   },
   {
@@ -42,136 +37,163 @@ const corpusChristiItems: AudioTrack[] = [
     title: "Comunhão Espiritual",
     subCategory: "Padre Pio em italiano",
     duration: "1 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    type: "audio",
+  },
+  {
+    id: "cc4",
+    title: "Hora Santa",
+    subCategory: "Uma hora com Jesus",
+    type: "playlist",
+    itemCount: 7,
+    imageUrl: "/placeholder.svg?width=160&height=160",
+  },
+  {
+    id: "cc5",
+    title: "Comunhão Espiritual",
+    subCategory: "Minha alma suspira por Vós",
+    duration: "1 min",
+    imageUrl: "/placeholder.svg?width=160&height=160",
     type: "audio",
   },
 ]
+
 const highlightsItems: AudioTrack[] = [
   {
     id: "hl1",
-    title: "Novena para Namorados",
-    subCategory: "com Joaquim e Ana",
+    title: "Novena para Namo...",
+    subCategory: "com Joaquim",
     type: "playlist",
     itemCount: 9,
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
   },
   {
     id: "hl2",
     title: "Novena para Casais",
-    subCategory: "com Amanda e Marcelo",
+    subCategory: "com Amanda e Marcel...",
     type: "playlist",
     itemCount: 9,
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
   },
   {
     id: "hl3",
     title: "Novena para Filhos",
-    subCategory: "com Maria e José",
+    subCategory: "com Maria",
     type: "playlist",
     itemCount: 9,
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
   },
 ]
+
 const subscriberFavoritesItems: AudioTrack[] = [
   {
     id: "sf1",
-    title: "Oração da Noite Completa",
+    title: "Oração da Noite",
     subCategory: "Com Juliano Cazarré",
     duration: "8-9 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "audio",
   },
   {
     id: "sf2",
-    title: "Minuto de Inspiração Divina",
-    subCategory: "com Pe. Patrick Fernandes",
+    title: "Minuto de Inspiraç...",
+    subCategory: "com Pe. Patrick Fernan...",
     duration: "3-6 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "audio",
   },
   {
     id: "sf3",
-    title: "Santo do Dia: Reflexões",
+    title: "Santo do Dia",
     subCategory: "Crer com a Igreja",
     duration: "4-8 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "audio",
   },
 ]
+
 const dailyWithGuestsItems: AudioTrack[] = [
   {
     id: "dg1",
-    title: "Evangelho Diário Comentado",
+    title: "Evangelho Diário",
     subCategory: "com Juliano Cazarré",
     duration: "5-30 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "audio",
   },
   {
     id: "dg2",
-    title: "Imitação Diária de Cristo",
+    title: "Imitação Diária",
     subCategory: "com Juliano Cazarré",
     duration: "8-12 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "audio",
   },
   {
     id: "dg3",
-    title: "Terço Mariano em Família",
-    subCategory: "com Família Lima",
+    title: "Terço Mariano",
+    subCategory: "com Família",
     duration: "24 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "playlist",
     itemCount: 5,
   },
 ]
+
 const exploreCategoriesItems = [
   {
     id: "ec1",
-    title: "Lofi Católico",
-    description: "Música para relaxar ou focar na fé",
+    title: "Lofi",
+    description: "Música para relaxar ou focar",
     imageUrl: "/images/home/11-explore-categories.jpeg",
     link: "/category/lofi",
   },
   {
     id: "ec2",
-    title: "Áudios da Bíblia Sagrada",
-    description: "Caminhe pela Palavra de Deus",
+    title: "Áudios da Bíblia",
+    description: "Caminhe pela Palavra",
     imageUrl: "/placeholder.svg?width=280&height=373",
     link: "/category/biblia-audios",
   },
+  {
+    id: "ec3",
+    title: "Meditação",
+    description: "Encontre paz e silêncio",
+    imageUrl: "/placeholder.svg?width=280&height=373",
+    link: "/category/meditacao",
+  },
 ]
+
 const nightRoutinesItems: AudioTrack[] = [
   {
     id: "nr1",
-    title: "Oração da Noite para Dormir",
+    title: "Oração da Noite",
     subCategory: "Com Juliano Cazarré",
     duration: "9 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "audio",
     link: "/audio/oracao-noite-jc",
   },
   {
     id: "nr2",
-    title: "Minuto Para Dormir em Paz",
-    subCategory: "Orações Breves Para Descansar",
+    title: "Minuto Para Dormir",
+    subCategory: "Orações Breves Para D...",
     itemCount: 18,
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "playlist",
     link: "/playlist/minuto-dormir",
   },
   {
     id: "nr3",
-    title: "Pílulas de Sabedoria Noturna",
+    title: "Pílulas de Sabedoria",
     subCategory: "Francisco Faus",
     duration: "16 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=240&height=135",
     type: "audio",
     link: "/audio/pilulas-sabedoria",
   },
 ]
 
-// Data for sections to be changed
 const bibleStoriesForSleepItems = [
   {
     id: "bs1",
@@ -183,7 +205,7 @@ const bibleStoriesForSleepItems = [
   },
   {
     id: "bs2",
-    title: "Lázaro, Vem Para Fora",
+    title: "Lázaro",
     subtitle: "André Leite: Jo 10, 22-12",
     details: "22 min",
     imageUrl: "/placeholder.svg?width=100&height=100",
@@ -191,140 +213,143 @@ const bibleStoriesForSleepItems = [
   },
   {
     id: "bs3",
-    title: "A Anunciação",
-    subtitle: "Lc 1, 26-38",
-    details: "15 min",
+    title: "O Cerco de Jericó",
+    subtitle: "Js 3-6",
+    details: "22 min",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/audio/anunciacao",
+    link: "/audio/cerco-jerico",
   },
   {
     id: "bs4",
-    title: "O Filho Pródigo",
-    subtitle: "Lc 15, 11-32",
+    title: "Daniel na Cova dos Leões",
+    subtitle: "Dn 6",
     details: "18 min",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/audio/filho-prodigo",
+    link: "/audio/daniel-leoes",
   },
   {
     id: "bs5",
-    title: "Jonas e a Baleia",
-    subtitle: "Livro de Jonas",
-    details: "20 min",
+    title: "Jonas e o Grande Peixe",
+    subtitle: "Jn 1-2",
+    details: "15 min",
     imageUrl: "/placeholder.svg?width=100&height=100",
     link: "/audio/jonas",
   },
   {
     id: "bs6",
-    title: "Daniel na Cova dos Leões",
-    subtitle: "Dn 6",
-    details: "22 min",
+    title: "A Rainha Ester",
+    subtitle: "Et 4-7",
+    details: "25 min",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/audio/daniel-leoes",
+    link: "/audio/rainha-ester",
   },
 ]
 
 const newTestamentItems = [
   {
     id: "nt1",
-    title: "Evangelho de São Mateus",
-    subtitle: "Caminhe pela Vida de Jesus Cristo",
+    title: "Evangelho de Mateus",
+    subtitle: "Caminhe pela Vida de Jesus",
     details: "28 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
+    imageUrl: "/placeholder.svg?width=64&height=64",
     link: "/playlist/mateus",
   },
   {
     id: "nt2",
-    title: "Evangelho de São Marcos",
-    subtitle: "Caminhe pela Vida de Jesus Cristo",
+    title: "Evangelho de Marcos",
+    subtitle: "Caminhe pela Vida de Jesus",
     details: "16 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
+    imageUrl: "/placeholder.svg?width=64&height=64",
     link: "/playlist/marcos",
   },
   {
     id: "nt3",
-    title: "Evangelho de São Lucas",
-    subtitle: "Caminhe pela Vida de Jesus Cristo",
+    title: "Evangelho de Lucas",
+    subtitle: "Caminhe pela Vida de Jesus",
     details: "24 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
+    imageUrl: "/placeholder.svg?width=64&height=64",
     link: "/playlist/lucas",
   },
+]
+
+const musicItems: AudioTrack[] = [
   {
-    id: "nt4",
-    title: "Evangelho de São João",
-    subtitle: "Caminhe pela Vida de Jesus Cristo",
-    details: "21 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/joao",
+    id: "m1",
+    title: "Tomé",
+    subCategory: "Davidson Silva",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    type: "audio",
+    link: "/audio/tome",
   },
   {
-    id: "nt5",
-    title: "Atos dos Apóstolos",
-    subtitle: "O início da Igreja",
-    details: "28 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/atos",
+    id: "m2",
+    title: "Sacred Heart Lofi",
+    subCategory: "Lofi católico",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    type: "audio",
+    link: "/audio/sacred-heart-lofi",
   },
   {
-    id: "nt6",
-    title: "Apocalipse",
-    subtitle: "Revelações de São João",
-    details: "22 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/apocalipse",
+    id: "m3",
+    title: "#1 Playlist Lofi",
+    subCategory: "Para rezar e estudar",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    type: "playlist",
+    itemCount: 10,
+    link: "/playlist/lofi-1",
   },
 ]
 
 const whereToStartItems = [
   {
     id: "ws1",
-    title: "Introdutório à Fé",
-    subtitle: "Comece com o básico da doutrina",
+    title: "Introdutório",
+    subtitle: "Comece com o básico",
     details: "9 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
+    imageUrl: "/placeholder.svg?width=64&height=64",
     link: "/playlist/introdutorio",
   },
   {
     id: "ws2",
-    title: "Como Rezar o Terço",
-    subtitle: "Conheça o Poder da Oração Mariana",
-    details: "14 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/como-rezar",
+    title: "Oferecimento do Dia",
+    subtitle: "Comece seu dia",
+    details: "1 sessão",
+    imageUrl: "/placeholder.svg?width=64&height=64",
+    link: "/audio/oferecimento-dia",
   },
   {
     id: "ws3",
-    title: "Lectio Divina: Guia",
-    subtitle: "Meditação da Palavra de Deus",
-    details: "7 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/lectio-divina-guia",
-  },
-  {
-    id: "ws4",
-    title: "O Credo Explicado",
-    subtitle: "Entenda os artigos da nossa fé",
-    details: "12 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/credo-explicado",
-  },
-  {
-    id: "ws5",
-    title: "Os Sacramentos",
-    subtitle: "Sinais visíveis da graça invisível",
-    details: "7 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/sacramentos",
-  },
-  {
-    id: "ws6",
-    title: "Vida dos Santos",
-    subtitle: "Exemplos de fé e virtude",
-    details: "20 sessões",
-    imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/vida-santos",
+    title: "Como Rezar",
+    subtitle: "Conheça o Poder da Oração",
+    details: "14 sessões",
+    imageUrl: "/placeholder.svg?width=64&height=64",
+    link: "/playlist/como-rezar",
   },
 ]
 
+const thematicsItems: AudioTrack[] = [
+  {
+    id: "th1",
+    title: "Paciência",
+    subCategory: "Espere com Deus",
+    itemCount: 6,
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    type: "playlist",
+    link: "/playlist/paciencia",
+  },
+  {
+    id: "th2",
+    title: "Perdão",
+    subCategory: "Pai, perdoai-lhes",
+    itemCount: 8,
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    type: "playlist",
+    link: "/playlist/perdao",
+  },
+  // ... mais itens temáticos
+]
+
+// Dados para Rotinas Matinais, adaptados para HorizontalGridScrollSection
 const morningRoutinesGridItems = [
   {
     id: "mr1",
@@ -345,41 +370,42 @@ const morningRoutinesGridItems = [
   {
     id: "mr3",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    title: "Oferecimento da Manhã",
-    subtitle: "Consagre seu dia a Deus",
+    title: "Minuto de Homilia",
+    subtitle: "Com Pe. Sérgio Jeremias",
     details: "2 min",
-    link: "/pre-player/oferecimento-manha",
+    link: "/pre-player/minuto-homilia",
   },
   {
     id: "mr4",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    title: "Desafio de Meditação",
-    subtitle: "7 dias para uma mente serena",
-    details: "7 sessões",
-    link: "/playlist/desafio-meditacao",
+    title: "Oração da Manhã",
+    subtitle: "Comece bem o seu dia",
+    details: "5 min",
+    link: "/pre-player/oracao-manha",
   },
   {
     id: "mr5",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    title: "Diário de Gratidão",
-    subtitle: "Reflexões matinais",
-    details: "5 min",
-    link: "/pre-player/diario-gratidao",
+    title: "Café com Deus Pai",
+    subtitle: "Reflexão diária",
+    details: "7 min",
+    link: "/pre-player/cafe-deus-pai",
   },
   {
     id: "mr6",
     imageUrl: "/placeholder.svg?width=100&height=100",
     title: "Santo do Dia",
-    subtitle: "Inspiração para sua jornada",
-    details: "3 min",
+    subtitle: "Inspiração e exemplo",
+    details: "4 min",
     link: "/pre-player/santo-do-dia",
   },
 ]
 
+// Dados para Orações Infantis, adaptados para HorizontalGridScrollSection
 const kidsPrayersGridItems = [
   {
     id: "kp1",
-    title: "Intro: Crianças na Fé",
+    title: "Intro: Crianças",
     subtitle: "Hallow Crianças",
     details: "5 sessões",
     imageUrl: "/placeholder.svg?width=100&height=100",
@@ -387,209 +413,177 @@ const kidsPrayersGridItems = [
   },
   {
     id: "kp2",
-    title: "Orações em Família Unida",
-    subtitle: "Para rezar junto com seus filhos",
+    title: "Orações em Família",
+    subtitle: "Para rezar junto",
     details: "4 sessões",
     imageUrl: "/placeholder.svg?width=100&height=100",
     link: "/playlist/oracoes-familia",
   },
   {
     id: "kp3",
-    title: "Anjinho da Guarda",
-    subtitle: "Oração para crianças",
-    details: "1 min",
+    title: "Orações Para Dormir",
+    subtitle: "Recarregar esta página", // Exemplo da imagem
+    details: "7 sessões",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/audio/anjo-da-guarda",
+    link: "/playlist/oracoes-dormir-criancas",
   },
   {
     id: "kp4",
-    title: "Histórias Bíblicas Infantis",
-    subtitle: "Aventuras da Bíblia para os pequenos",
-    details: "10 sessões",
+    title: "A Ovelha Perdida",
+    subtitle: "História do Hallow Crianças",
+    details: "23 min",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/historias-biblicas-infantis",
+    link: "/audio/ovelha-perdida",
   },
   {
     id: "kp5",
-    title: "Músicas Católicas Infantis",
-    subtitle: "Cante e louve com alegria",
-    details: "15 músicas",
+    title: "Meu Diário com Deus",
+    subtitle: "Escrita Espiritual. Para Crianças",
+    details: "15 sessões",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/playlist/musicas-catolicas-infantis",
+    link: "/playlist/diario-deus-criancas",
   },
   {
     id: "kp6",
-    title: "Boa Noite, Jesus",
-    subtitle: "Oração antes de dormir",
-    details: "2 min",
+    title: "Intro: Adolescentes",
+    subtitle: "Hallow Crianças",
+    details: "8 sessões",
     imageUrl: "/placeholder.svg?width=100&height=100",
-    link: "/audio/boa-noite-jesus",
-  },
-]
-
-const recentlyPlayedItems: AudioTrack[] = [
-  {
-    id: "rp1",
-    title: "Terço Diário Meditado",
-    subCategory: "Com os mistérios do dia",
-    itemCount: 7,
-    type: "playlist",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    link: "/playlist/terco-misterios",
+    link: "/playlist/intro-adolescentes",
   },
   {
-    id: "rp2",
-    title: "Imitação de Cristo (Áudio)",
-    subCategory: "com Juliano Cazarré",
-    duration: "10 min",
-    type: "audio",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    link: "/audio/imitacao-cristo-jc",
+    id: "kp7",
+    title: "Intro: Jovens",
+    subtitle: "Hallow Jovens",
+    details: "6 sessões",
+    imageUrl: "/placeholder.svg?width=100&height=100",
+    link: "/playlist/intro-jovens",
   },
   {
-    id: "rp3",
-    title: "Evangelho do Dia (Lectio)",
-    subCategory: "Lectio Divina",
-    duration: "12 min",
-    type: "audio",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    link: "/audio/evangelho-dia",
-  },
-]
-const musicForSleepItems: AudioTrack[] = [
-  {
-    id: "ms1",
-    title: "Piano Para Dormir e Sonhar",
-    subCategory: "Francesca LaRosa",
-    itemCount: 16,
-    type: "playlist",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    link: "/playlist/piano-dormir-francesca",
+    id: "kp8",
+    title: "Que Santo É Este?",
+    subtitle: "Hallow Crianças",
+    details: "15 sessões",
+    imageUrl: "/placeholder.svg?width=100&height=100",
+    link: "/playlist/que-santo-e-este",
   },
   {
-    id: "ms2",
-    title: "Piano Relaxante Divino",
-    subCategory: "Simon Wester",
-    itemCount: 12,
-    type: "playlist",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    link: "/playlist/piano-relaxante-simon",
-  },
-  {
-    id: "ms3",
-    title: "Cantos Gregorianos Celestiais",
-    subCategory: "Para meditar e dormir profundamente",
-    itemCount: 19,
-    type: "playlist",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    link: "/playlist/gregoriano-dormir",
-  },
-]
-
-const musicItems: AudioTrack[] = [
-  {
-    id: "m1",
-    title: "Tomé (Ao Vivo)",
-    subCategory: "Davidson Silva",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    type: "audio",
-    link: "/audio/tome",
-  },
-  {
-    id: "m2",
-    title: "Sacred Heart Lofi Beats",
-    subCategory: "Lofi católico para oração",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    type: "audio",
-    link: "/audio/sacred-heart-lofi",
-  },
-  {
-    id: "m3",
-    title: "#1 Playlist Lofi Cristã",
-    subCategory: "Para rezar, estudar e meditar",
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    type: "playlist",
-    itemCount: 10,
-    link: "/playlist/lofi-1",
-  },
-]
-
-const thematicsItems: AudioTrack[] = [
-  {
-    id: "th1",
-    title: "Paciência Divina",
-    subCategory: "Espere com Deus e confie",
-    itemCount: 6,
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    type: "playlist",
-    link: "/playlist/paciencia",
-  },
-  {
-    id: "th2",
-    title: "Perdão e Misericórdia",
-    subCategory: "Pai, perdoai-lhes, não sabem o que fazem",
-    itemCount: 8,
-    imageUrl: "/placeholder.svg?width=300&height=400",
-    type: "playlist",
-    link: "/playlist/perdao",
+    id: "kp9",
+    title: "Preparação para a Confissão",
+    subtitle: "Hallow Crianças",
+    details: "15 min",
+    imageUrl: "/placeholder.svg?width=100&height=100",
+    link: "/audio/preparacao-confissao-criancas",
   },
 ]
 
 const novenasItems: AudioTrack[] = [
   {
     id: "nv1",
-    title: "Novena de São José Operário",
-    subCategory: "São José, rogai por nós e nossas famílias",
+    title: "Novena de São José",
+    subCategory: "São José, rogai por nós",
     itemCount: 9,
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: "/placeholder.svg?width=160&height=160",
     type: "playlist",
     link: "/playlist/novena-sao-jose",
   },
+  // ... mais novenas
   {
     id: "nv_scj",
-    title: "Novena ao Sagrado Coração de Jesus",
-    subCategory: "Eu confio em Vós, Senhor",
-    itemCount: 12,
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    title: "Sagrado Coração de Jesus",
+    subCategory: "Eu confio em Vós",
+    itemCount: 12, // Exemplo da imagem
+    imageUrl: "/placeholder.svg?width=160&height=160",
     type: "playlist",
     link: "/playlist/novena-sagrado-coracao",
   },
 ]
-// --- FIM DOS DADOS ---
 
-const orderedCategories = [
-  "Sagrado Coração de Jesus",
-  "Corpus Christi",
-  "Frase",
-  "Contra o vício",
-  "Destaques",
-  "Rotinas Matinais", // Changed
-  "Favoritas dos Assinantes",
-  "Termine de Rezar",
-  "Diárias com Convidados",
-  "Reflita sobre o Evangelho",
-  "Explore por Categorias",
-  "Rotinas Noturnas",
-  "Histórias Bíblicas para Dormir", // Changed
-  "Rezadas Recentemente",
-  "Músicas para Dormir",
-  "Minuto de Homilia",
-  "Novo Testamento", // Changed
-  "Música",
-  "Não sabe por onde começar", // Changed
-  "Temáticas",
-  "Magisterium",
-  "Orações infantis", // Changed
-  "Novenas",
+const recentlyPlayedItems: AudioTrack[] = [
+  {
+    id: "rp1",
+    title: "Terço Diário",
+    subCategory: "Com os mistérios diários",
+    itemCount: 7,
+    type: "playlist",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    link: "/playlist/terco-misterios",
+  },
+  {
+    id: "rp2",
+    title: "Terço Diário",
+    subCategory: "com Myrian Rios",
+    itemCount: 7,
+    type: "playlist",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    link: "/playlist/terco-myrian",
+  },
+  {
+    id: "rp3",
+    title: "Imitação de Cristo",
+    subCategory: "com Juliano Cazarré",
+    duration: "10 min",
+    type: "audio",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    link: "/audio/imitacao-cristo-jc",
+  },
+  {
+    id: "rp4",
+    title: "Evangelho do Dia",
+    subCategory: "Lectio Divina",
+    duration: "12 min",
+    type: "audio",
+    imageUrl: "/placeholder.svg?width=160&height=160",
+    link: "/audio/evangelho-dia",
+  },
 ]
 
-const sections = [
-  { id: "main-banner", category: "NÃO_FILTRAR", component: <MainBanner /> },
-  { id: "quick-access", category: "NÃO_FILTRAR", component: <QuickAccessIcons /> },
+const musicForSleepItems: AudioTrack[] = [
   {
-    id: "challenge-sacred-heart",
-    category: "Sagrado Coração de Jesus",
-    component: (
+    id: "ms1",
+    title: "Piano Para Dormir",
+    subCategory: "Francesca LaRosa",
+    itemCount: 16,
+    type: "playlist",
+    imageUrl: "/placeholder.svg?width=240&height=135",
+    link: "/playlist/piano-dormir-francesca",
+  },
+  {
+    id: "ms2",
+    title: "Piano Relaxante",
+    subCategory: "Simon Wester",
+    itemCount: 12,
+    type: "playlist",
+    imageUrl: "/placeholder.svg?width=240&height=135",
+    link: "/playlist/piano-relaxante-simon",
+  },
+  {
+    id: "ms3",
+    title: "Cantos Gregorianos",
+    subCategory: "Para meditar e dormir",
+    itemCount: 19,
+    type: "playlist",
+    imageUrl: "/placeholder.svg?width=240&height=135",
+    link: "/playlist/gregoriano-dormir",
+  },
+  {
+    id: "ms4",
+    title: "Música Ambiente Calma",
+    subCategory: "Sons da natureza",
+    itemCount: 22,
+    type: "playlist",
+    imageUrl: "/placeholder.svg?width=240&height=135",
+    link: "/playlist/ambiente-calma",
+  },
+]
+
+export default function NewHomePage() {
+  return (
+    <div className="bg-background">
+      <HomeHeader />
+      <MainBanner />
+      <QuickAccessIcons />
+
       <ChallengeBanner
         title="Sagrado Coração de Jesus"
         imageUrl="/images/home/02-sacred-heart.png"
@@ -600,20 +594,12 @@ const sections = [
         secondaryText="Dia 6: 14 de junho"
         link="/challenge/sagrado-coracao"
         themeColorClass="bg-red-900/70"
-        imageContainerClassName="aspect-[695/960]"
       />
-    ),
-  },
-  {
-    id: "corpus-christi",
-    category: "Corpus Christi",
-    component: <HorizontalScrollSection title="Corpus Christi" items={corpusChristiItems} thumbnailVariant="lounge" />,
-  },
-  { id: "quote", category: "Frase", component: <QuoteSection /> },
-  {
-    id: "challenge-vice",
-    category: "Contra o vício",
-    component: (
+
+      <HorizontalScrollSection title="Corpus Christi" items={corpusChristiItems} />
+
+      <QuoteSection />
+
       <ChallengeBanner
         title="Contra o Vício"
         imageUrl="/images/home/05-against-vice.jpeg"
@@ -623,60 +609,48 @@ const sections = [
         secondaryText="Novena Contra o Vício"
         link="/challenge/contra-o-vicio"
         themeColorClass="bg-blue-900/70"
-        imageContainerClassName="aspect-[695/960]"
       />
-    ),
-  },
-  {
-    id: "highlights",
-    category: "Destaques",
-    component: <HorizontalScrollSection title="Destaques" items={highlightsItems} thumbnailVariant="lounge" />,
-  },
-  {
-    id: "morning-routines",
-    category: "Rotinas Matinais",
-    component: <HorizontalGridScrollSection title="Rotinas Matinais" items={morningRoutinesGridItems} numRows={3} />,
-  },
-  {
-    id: "subscriber-favorites",
-    category: "Favoritas dos Assinantes",
-    component: (
+
+      <HorizontalScrollSection
+        title="Destaques"
+        items={highlightsItems}
+        itemWidthClass="w-60 md:w-72"
+        aspectRatioClass="aspect-video"
+      />
+
+      {/* Seção Rotinas Matinais MODIFICADA */}
+      <HorizontalGridScrollSection title="Rotinas Matinais" items={morningRoutinesGridItems} />
+
       <HorizontalScrollSection
         title="Favoritas dos Assinantes"
         items={subscriberFavoritesItems}
-        thumbnailVariant="lounge"
+        itemWidthClass="w-60 md:w-72"
+        aspectRatioClass="aspect-video"
       />
-    ),
-  },
-  {
-    id: "challenge-finish-praying",
-    category: "Termine de Rezar",
-    component: (
+
+      {/* A imagem "8 Termine de Rezar.png" é muito similar à "Sagrado Coração de Jesus".
+        Pode ser uma variação ou uma seção diferente com o mesmo estilo.
+        Assumindo que é uma seção separada por enquanto: */}
       <ChallengeBanner
         title="Termine de Rezar"
-        imageUrl="/images/home/08-finish-praying.png"
-        prayingCount="70,116 de 222,0K rezando"
+        imageUrl="/images/home/08-finish-praying.png" // Usando a imagem específica
+        prayingCount="70,116 de 222,0K rezando" // Dados da imagem, podem ser diferentes
         daysRemaining="12 dias restantes"
         category="Santos"
-        primaryText="Sagrado Coração de Jesus"
+        primaryText="Sagrado Coração de Jesus" // Texto da imagem
         secondaryText="Dia 6: 14 de junho"
         link="/challenge/termine-de-rezar-sagrado-coracao"
         themeColorClass="bg-red-900/70"
-        imageContainerClassName="aspect-[695/960]"
       />
-    ),
-  },
-  {
-    id: "daily-with-guests",
-    category: "Diárias com Convidados",
-    component: (
-      <HorizontalScrollSection title="Diárias com Convidados" items={dailyWithGuestsItems} thumbnailVariant="lounge" />
-    ),
-  },
-  {
-    id: "reflect-gospel",
-    category: "Reflita sobre o Evangelho",
-    component: (
+
+      <HorizontalScrollSection
+        title="Diárias com Convidados"
+        items={dailyWithGuestsItems}
+        itemWidthClass="w-60 md:w-72"
+        aspectRatioClass="aspect-video"
+      />
+
+      {/* NOVAS SEÇÕES ADICIONADAS ABAIXO */}
       <SingleCardFeature
         sectionTitle="Reflita sobre o Evangelho"
         card={{
@@ -687,64 +661,41 @@ const sections = [
           link: "/homilia/semanal-pe-pedro",
         }}
       />
-    ),
-  },
-  {
-    id: "explore-categories",
-    category: "Explore por Categorias",
-    component: (
+
       <section className="py-6 md:py-8">
         <div className="container px-0 md:px-6">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 px-4 md:px-0 text-white">
-            Explore por Categoria
-          </h2>
-          <div className="flex overflow-x-auto space-x-3 md:space-x-4 pb-4 -mx-4 px-4 md:mx-0 md:px-0 no-scrollbar">
+          <h2 className="text-2xl font-bold tracking-tight mb-4 px-4 md:px-0">Explore por Categoria</h2>
+          <div className="flex overflow-x-auto space-x-3 md:space-x-4 pb-4 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent">
             {exploreCategoriesItems.map((item) => (
-              <div key={item.id} className="flex-shrink-0 first:ml-4 last:mr-4 md:first:ml-0 md:last:mr-0 w-60 md:w-72">
+              <div key={item.id} className="flex-shrink-0 first:ml-4 last:mr-4 md:first:ml-0 md:last:mr-0">
                 <ExploreCategoryCard item={item} />
               </div>
             ))}
           </div>
         </div>
       </section>
-    ),
-  },
-  {
-    id: "night-routines",
-    category: "Rotinas Noturnas",
-    component: (
-      <HorizontalScrollSection title="Rotinas Noturnas" items={nightRoutinesItems} thumbnailVariant="lounge" />
-    ),
-  },
-  {
-    id: "bible-stories",
-    category: "Histórias Bíblicas para Dormir",
-    component: (
-      <HorizontalGridScrollSection
-        title="Histórias Bíblicas Para Dormir"
-        items={bibleStoriesForSleepItems}
-        numRows={3}
+
+      <HorizontalScrollSection
+        title="Rotinas Noturnas"
+        items={nightRoutinesItems}
+        itemWidthClass="w-60 md:w-72"
+        aspectRatioClass="aspect-video"
       />
-    ),
-  },
-  {
-    id: "recently-played",
-    category: "Rezadas Recentemente",
-    component: (
-      <HorizontalScrollSection title="Rezadas Recentemente >" items={recentlyPlayedItems} thumbnailVariant="lounge" />
-    ),
-  },
-  {
-    id: "music-sleep",
-    category: "Músicas para Dormir",
-    component: (
-      <HorizontalScrollSection title="Músicas Para Dormir" items={musicForSleepItems} thumbnailVariant="lounge" />
-    ),
-  },
-  {
-    id: "homily-minute",
-    category: "Minuto de Homilia",
-    component: (
+
+      {/* Seção Histórias Bíblicas Para Dormir MODIFICADA */}
+      <HorizontalGridScrollSection title="Histórias Bíblicas Para Dormir" items={bibleStoriesForSleepItems} />
+
+      {/* NOVA SEÇÃO: Rezadas Recentemente */}
+      <HorizontalScrollSection title="Rezadas Recentemente >" items={recentlyPlayedItems} />
+
+      {/* NOVA SEÇÃO: Músicas Para Dormir */}
+      <HorizontalScrollSection
+        title="Músicas Para Dormir"
+        items={musicForSleepItems}
+        itemWidthClass="w-60 md:w-72"
+        aspectRatioClass="aspect-video"
+      />
+
       <SingleCardFeature
         sectionTitle="Minuto de Homilia"
         card={{
@@ -755,66 +706,44 @@ const sections = [
           link: "/homilia/minuto-pe-sergio",
         }}
       />
-    ),
-  },
-  {
-    id: "new-testament",
-    category: "Novo Testamento",
-    component: <HorizontalGridScrollSection title="Novo Testamento" items={newTestamentItems} numRows={3} />,
-  },
-  {
-    id: "music",
-    category: "Música",
-    component: <HorizontalScrollSection title="Música" items={musicItems} thumbnailVariant="lounge" />,
-  },
-  {
-    id: "where-to-start",
-    category: "Não sabe por onde começar",
-    component: <HorizontalGridScrollSection title="Não sabe por onde começar?" items={whereToStartItems} numRows={3} />,
-  },
-  {
-    id: "thematics",
-    category: "Temáticas",
-    component: <HorizontalScrollSection title="Temáticas" items={thematicsItems} thumbnailVariant="lounge" />,
-  },
-  { id: "magisterium", category: "Magisterium", component: <MagisteriumBanner /> },
-  {
-    id: "kids-prayers",
-    category: "Orações infantis",
-    component: <HorizontalGridScrollSection title="Orações Infantis" items={kidsPrayersGridItems} numRows={3} />,
-  },
-  {
-    id: "novenas",
-    category: "Novenas",
-    component: <HorizontalScrollSection title="Novenas" items={novenasItems} thumbnailVariant="lounge" />,
-  },
-  { id: "final-section", category: "NÃO_FILTRAR", component: <FinalSection /> },
-]
 
-export default function NewHomePage() {
-  const [selectedCategory, setSelectedCategory] = useState("Tudo")
+      <section className="py-6 md:py-8">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-2xl font-bold tracking-tight mb-4">Novo Testamento</h2>
+          <div className="space-y-3">
+            {newTestamentItems.map((item) => (
+              <VerticalListItem key={item.id} item={{ ...item, showMoreIcon: false }} />
+            ))}
+          </div>
+        </div>
+      </section>
 
-  const filteredSections =
-    selectedCategory === "Tudo" ? sections : sections.filter((section) => section.category === selectedCategory)
+      <HorizontalScrollSection title="Música" items={musicItems} />
 
-  return (
-    <div className="bg-black text-white min-h-screen">
-      <HomeFilterHeader
-        categories={orderedCategories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-      />
+      <section className="py-6 md:py-8">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-2xl font-bold tracking-tight mb-4">Não sabe por onde começar?</h2>
+          <div className="space-y-3">
+            {whereToStartItems.map((item) => (
+              <VerticalListItem key={item.id} item={{ ...item, showMoreIcon: false }} />
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <main>
-        {filteredSections.map(
-          (section) =>
-            (section.category !== "NÃO_FILTRAR" ||
-              selectedCategory === "Tudo" ||
-              section.category === selectedCategory) && <div key={section.id}>{section.component}</div>,
-        )}
-      </main>
+      <HorizontalScrollSection title="Temáticas" items={thematicsItems} />
+      <MagisteriumBanner />
 
-      <div className="h-24"></div>
+      {/* Seção Orações Infantis MODIFICADA */}
+      <HorizontalGridScrollSection title="Orações Infantis" items={kidsPrayersGridItems} />
+
+      <HorizontalScrollSection title="Novenas" items={novenasItems} />
+
+      {/* NOVA SEÇÃO FINAL */}
+      <FinalSection />
+
+      {/* Espaço extra no final para não colar na BottomNav */}
+      <div className="h-8 md:h-12"></div>
     </div>
   )
 }

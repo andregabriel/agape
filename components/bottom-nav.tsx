@@ -17,8 +17,7 @@ export default function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-lg">
-      {/* Reduced opacity to bg-black/40 for greater translucency */}
+    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border shadow-t-lg z-50">
       <div className="flex justify-around items-center h-16 max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href
@@ -28,11 +27,11 @@ export default function BottomNav() {
               href={item.href}
               className={cn(
                 "flex flex-col items-center justify-center text-xs font-medium p-2 rounded-md transition-colors",
-                isActive ? "text-white" : "text-neutral-300 hover:text-white",
+                isActive ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
               aria-current={isActive ? "page" : undefined}
             >
-              <item.icon className={cn("h-5 w-5 mb-0.5", isActive ? "text-white" : "text-neutral-300")} />
+              <item.icon className={cn("h-5 w-5 mb-0.5", isActive ? "text-primary" : "text-muted-foreground")} />
               {item.label}
             </Link>
           )
