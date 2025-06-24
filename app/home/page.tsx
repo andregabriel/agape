@@ -323,6 +323,9 @@ const novenasItems: AudioTrack[] = [
 // --- FIM DOS DADOS ---
 
 // --- ESTRUTURA DE SEÇÕES E CATEGORIAS ---
+// Lista de categorias na ordem desejada para os filtros
+const orderedCategories = ["Destaques", "Orações", "Reflexões", "Música", "Histórias"]
+
 const sections = [
   { id: "main-banner", category: "Destaques", component: <MainBanner /> },
   { id: "quick-access", category: "Destaques", component: <QuickAccessIcons /> },
@@ -555,8 +558,6 @@ const sections = [
   { id: "final-section", category: "Destaques", component: <FinalSection /> },
 ]
 
-const categories = [...new Set(sections.map((s) => s.category))]
-
 export default function NewHomePage() {
   const [selectedCategory, setSelectedCategory] = useState("Tudo")
 
@@ -566,7 +567,7 @@ export default function NewHomePage() {
   return (
     <div className="bg-black text-white min-h-screen">
       <HomeFilterHeader
-        categories={categories}
+        categories={orderedCategories}
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
       />
