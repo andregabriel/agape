@@ -1,3 +1,5 @@
+"use client"
+
 import CommunityHeader from "@/components/comunidade/community-header"
 import QuickActionsSection from "@/components/comunidade/quick-actions-section"
 import GettingStartedSection from "@/components/comunidade/getting-started-section"
