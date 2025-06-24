@@ -324,21 +324,48 @@ const novenasItems: AudioTrack[] = [
 
 // --- ESTRUTURA DE SEÇÕES E CATEGORIAS ---
 // Lista de categorias na ordem desejada para os filtros
-const orderedCategories = ["Destaques", "Orações", "Reflexões", "Histórias", "Música"]
+const orderedCategories = [
+  "Sagrado Coração de Jesus",
+  "Corpus Christi",
+  "Frase",
+  "Contra o vício",
+  "Destaques", // Assuming "Destaques e Rotinas Matinais" refers to the "highlights" section
+  "Rotinas Matinais",
+  "Favoritas dos Assinantes",
+  "Termine de Rezar",
+  "Diárias com Convidados",
+  "Reflita sobre o Evangelho",
+  "Explore por Categorias",
+  "Rotinas Noturnas",
+  "Histórias Bíblicas para Dormir",
+  "Rezadas Recentemente",
+  "Músicas para Dormir",
+  "Minuto de Homilia",
+  "Novo Testamento",
+  "Música",
+  "Não sabe por onde começar",
+  "Temáticas",
+  "Magisterium",
+  "Orações infantis",
+  "Novenas",
+]
 
 const sections = [
-  { id: "main-banner", category: "Destaques", component: <MainBanner /> },
-  { id: "quick-access", category: "Destaques", component: <QuickAccessIcons /> },
+  // These first two sections don't have a direct match in your 24 filter names.
+  // They will only show if "Tudo" is selected, or if we assign them to one of the 24 categories.
+  // For now, let's assign them to a placeholder category that won't match a filter.
+  { id: "main-banner", category: "Banner Principal", component: <MainBanner /> },
+  { id: "quick-access", category: "Acesso Rápido", component: <QuickAccessIcons /> },
   {
     id: "challenge-sacred-heart",
-    category: "Destaques",
+    category: "Sagrado Coração de Jesus", // Matched
     component: (
       <ChallengeBanner
         title="Sagrado Coração de Jesus"
         imageUrl="/images/home/02-sacred-heart.png"
         prayingCount="70,116 de 222,0K rezando"
         daysRemaining="12 dias restantes"
-        category="Santos"
+        category="Santos" // This inner 'category' prop of ChallengeBanner is for its display, not filtering
         primaryText="Sagrado Coração de Jesus"
         secondaryText="Dia 6: 14 de junho"
         link="/challenge/sagrado-coracao"
@@ -348,13 +375,13 @@ const sections = [
   },
   {
     id: "corpus-christi",
-    category: "Orações",
+    category: "Corpus Christi", // Matched
     component: <HorizontalScrollSection title="Corpus Christi" items={corpusChristiItems} />,
   },
-  { id: "quote", category: "Reflexões", component: <QuoteSection /> },
+  { id: "quote", category: "Frase", component: <QuoteSection /> }, // Matched
   {
     id: "challenge-vice",
-    category: "Destaques",
+    category: "Contra o vício", // Matched
     component: (
       <ChallengeBanner
         title="Contra o Vício"
@@ -369,8 +396,8 @@ const sections = [
     ),
   },
   {
-    id: "highlights",
-    category: "Destaques",
+    id: "highlights", // This corresponds to "Destaques e Rotinas Matinais" in user's list, using "Destaques" as filter
+    category: "Destaques", // Matched
     component: (
       <HorizontalScrollSection
         title="Destaques"
@@ -382,12 +409,12 @@ const sections = [
   },
   {
     id: "morning-routines",
-    category: "Orações",
+    category: "Rotinas Matinais", // Matched
     component: <HorizontalGridScrollSection title="Rotinas Matinais" items={morningRoutinesGridItems} />,
   },
   {
     id: "subscriber-favorites",
-    category: "Reflexões",
+    category: "Favoritas dos Assinantes", // Matched
     component: (
       <HorizontalScrollSection
         title="Favoritas dos Assinantes"
@@ -399,7 +426,7 @@ const sections = [
   },
   {
     id: "challenge-finish-praying",
-    category: "Destaques",
+    category: "Termine de Rezar", // Matched
     component: (
       <ChallengeBanner
         title="Termine de Rezar"
@@ -416,7 +443,7 @@ const sections = [
   },
   {
     id: "daily-with-guests",
-    category: "Reflexões",
+    category: "Diárias com Convidados", // Matched
     component: (
       <HorizontalScrollSection
         title="Diárias com Convidados"
@@ -428,7 +455,7 @@ const sections = [
   },
   {
     id: "reflect-gospel",
-    category: "Reflexões",
+    category: "Reflita sobre o Evangelho", // Matched
     component: (
       <SingleCardFeature
         sectionTitle="Reflita sobre o Evangelho"
@@ -444,7 +471,7 @@ const sections = [
   },
   {
     id: "explore-categories",
-    category: "Destaques",
+    category: "Explore por Categorias", // Matched
     component: (
       <section className="py-6 md:py-8">
         <div className="container px-0 md:px-6">
@@ -462,7 +489,7 @@ const sections = [
   },
   {
     id: "night-routines",
-    category: "Orações",
+    category: "Rotinas Noturnas", // Matched
     component: (
       <HorizontalScrollSection
         title="Rotinas Noturnas"
@@ -474,17 +501,17 @@ const sections = [
   },
   {
     id: "bible-stories",
-    category: "Histórias",
+    category: "Histórias Bíblicas para Dormir", // Matched
     component: <HorizontalGridScrollSection title="Histórias Bíblicas Para Dormir" items={bibleStoriesForSleepItems} />,
   },
   {
     id: "recently-played",
-    category: "Destaques",
+    category: "Rezadas Recentemente", // Matched
     component: <HorizontalScrollSection title="Rezadas Recentemente >" items={recentlyPlayedItems} />,
   },
   {
     id: "music-sleep",
-    category: "Música",
+    category: "Músicas para Dormir", // Matched
     component: (
       <HorizontalScrollSection
         title="Músicas Para Dormir"
@@ -496,7 +523,7 @@ const sections = [
   },
   {
     id: "homily-minute",
-    category: "Reflexões",
+    category: "Minuto de Homilia", // Matched
     component: (
       <SingleCardFeature
         sectionTitle="Minuto de Homilia"
@@ -512,7 +539,7 @@ const sections = [
   },
   {
     id: "new-testament",
-    category: "Histórias",
+    category: "Novo Testamento", // Matched
     component: (
       <section className="py-6 md:py-8">
         <div className="container px-4 md:px-6">
@@ -526,10 +553,10 @@ const sections = [
       </section>
     ),
   },
-  { id: "music", category: "Música", component: <HorizontalScrollSection title="Música" items={musicItems} /> },
+  { id: "music", category: "Música", component: <HorizontalScrollSection title="Música" items={musicItems} /> }, // Matched
   {
     id: "where-to-start",
-    category: "Reflexões",
+    category: "Não sabe por onde começar", // Matched
     component: (
       <section className="py-6 md:py-8">
         <div className="container px-4 md:px-6">
@@ -545,17 +572,19 @@ const sections = [
   },
   {
     id: "thematics",
-    category: "Reflexões",
+    category: "Temáticas", // Matched
     component: <HorizontalScrollSection title="Temáticas" items={thematicsItems} />,
   },
-  { id: "magisterium", category: "Destaques", component: <MagisteriumBanner /> },
+  { id: "magisterium", category: "Magisterium", component: <MagisteriumBanner /> }, // Matched
   {
     id: "kids-prayers",
-    category: "Orações",
+    category: "Orações infantis", // Matched
     component: <HorizontalGridScrollSection title="Orações Infantis" items={kidsPrayersGridItems} />,
   },
-  { id: "novenas", category: "Orações", component: <HorizontalScrollSection title="Novenas" items={novenasItems} /> },
-  { id: "final-section", category: "Destaques", component: <FinalSection /> },
+  { id: "novenas", category: "Novenas", component: <HorizontalScrollSection title="Novenas" items={novenasItems} /> }, // Matched
+  // The "FinalSection" doesn't have a direct match in your 24 filter names.
+  // It will only show if "Tudo" is selected.
+  { id: "final-section", category: "Seção Final", component: <FinalSection /> },
 ]
 
 export default function NewHomePage() {
