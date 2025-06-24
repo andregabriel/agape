@@ -29,7 +29,7 @@ export default function HomeFilterHeader({
 
         {/* 2. Filtros */}
         <div className="flex-grow overflow-hidden">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 -mb-2 scrollbar-hide">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 -mb-2 no-scrollbar">
             {["Tudo", ...categories].map((category) => (
               <Button
                 key={category}
