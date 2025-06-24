@@ -22,9 +22,12 @@ export default function HomeFilterHeader({
     <div className={cn("sticky top-0 z-40 bg-black/80 backdrop-blur-lg pt-4 pb-3", className)}>
       <div className="container flex items-center gap-3 px-4">
         {/* 1. Avatar */}
-        <Avatar className="h-8 w-8 flex-shrink-0">
-          <AvatarImage src="/placeholder.svg?width=32&height=32&text=A" alt="User Avatar" />
-          <AvatarFallback>A</AvatarFallback>
+        <Avatar className="h-9 w-9 flex-shrink-0">
+          {" "}
+          {/* Ajustado para h-9 w-9 para corresponder melhor */}
+          <AvatarImage src="/placeholder.svg?width=36&height=36&text=A" alt="User Avatar" />
+          <AvatarFallback className="bg-[#4A90E2] text-white text-lg font-medium">A</AvatarFallback>{" "}
+          {/* Cor e fonte ajustadas */}
         </Avatar>
 
         {/* 2. Filtros */}
@@ -35,12 +38,12 @@ export default function HomeFilterHeader({
                 key={category}
                 onClick={() => onSelectCategory(category)}
                 variant="ghost"
-                size="sm"
+                // size="sm" // Removido para usar padding customizado para altura
                 className={cn(
-                  "rounded-full px-4 py-1 h-auto text-sm whitespace-nowrap",
+                  "rounded-full px-4 py-1.5 h-auto text-sm font-medium whitespace-nowrap transition-colors duration-150 ease-in-out", // Padding e fonte ajustados
                   selectedCategory === category
-                    ? "bg-stone-50 text-black hover:bg-stone-200"
-                    : "bg-stone-800 text-white hover:bg-stone-700",
+                    ? "bg-[#1DB954] text-black hover:bg-[#1AA34A]" // Estilo selecionado
+                    : "bg-neutral-800 text-white hover:bg-neutral-700", // Estilo não selecionado
                 )}
               >
                 {category}
@@ -50,7 +53,7 @@ export default function HomeFilterHeader({
         </div>
 
         {/* 3. Ícone de Notificações */}
-        <Button variant="ghost" size="icon" className="text-white flex-shrink-0">
+        <Button variant="ghost" size="icon" className="text-white flex-shrink-0 hover:bg-neutral-700/50">
           <Bell className="h-6 w-6" />
         </Button>
       </div>
