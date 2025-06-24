@@ -126,14 +126,14 @@ const exploreCategoriesItems = [
     id: "ec1",
     title: "Lofi Católico",
     description: "Música para relaxar ou focar na fé",
-    imageUrl: "/images/home/11-explore-categories.jpeg", // Manter imagem original se boa
+    imageUrl: "/images/home/11-explore-categories.jpeg",
     link: "/category/lofi",
   },
   {
     id: "ec2",
     title: "Áudios da Bíblia Sagrada",
     description: "Caminhe pela Palavra de Deus",
-    imageUrl: "/placeholder.svg?width=280&height=373", // Placeholder para manter o estilo
+    imageUrl: "/placeholder.svg?width=280&height=373",
     link: "/category/biblia-audios",
   },
 ]
@@ -426,6 +426,7 @@ const sections = [
         secondaryText="Dia 6: 14 de junho"
         link="/challenge/sagrado-coracao"
         themeColorClass="bg-red-900/70"
+        imageContainerClassName="aspect-[695/960]"
       />
     ),
   },
@@ -448,6 +449,7 @@ const sections = [
         secondaryText="Novena Contra o Vício"
         link="/challenge/contra-o-vicio"
         themeColorClass="bg-blue-900/70"
+        imageContainerClassName="aspect-[695/960]"
       />
     ),
   },
@@ -486,6 +488,7 @@ const sections = [
         secondaryText="Dia 6: 14 de junho"
         link="/challenge/termine-de-rezar-sagrado-coracao"
         themeColorClass="bg-red-900/70"
+        imageContainerClassName="aspect-[695/960]"
       />
     ),
   },
@@ -647,15 +650,12 @@ export default function NewHomePage() {
       <main>
         {filteredSections.map(
           (section) =>
-            // Renderiza a seção apenas se ela não for explicitamente marcada para não filtrar
-            // ou se "Tudo" estiver selecionado, ou se sua categoria corresponder ao filtro.
             (section.category !== "NÃO_FILTRAR" ||
               selectedCategory === "Tudo" ||
               section.category === selectedCategory) && <div key={section.id}>{section.component}</div>,
         )}
       </main>
 
-      {/* Espaço extra no final para não colar na BottomNav */}
       <div className="h-24"></div>
     </div>
   )
