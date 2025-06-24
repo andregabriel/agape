@@ -17,8 +17,8 @@ export default function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black/70 backdrop-blur-lg">
-      {/* Increased opacity slightly to bg-black/70 for better legibility like Spotify's dark tint */}
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-lg">
+      {/* Reduced opacity to bg-black/40 for greater translucency */}
       <div className="flex justify-around items-center h-16 max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href
