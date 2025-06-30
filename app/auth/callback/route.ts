@@ -5,18 +5,24 @@ import { cookies } from "next/headers"
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get("code")
-  // se "next" estiver no parâmetro, use-o como URL de redirecionamento
-  const next = searchParams.get("next") ?? "/"
+  const cookieStore = cookies()
+
+  // Lê o 'next' path do cookie que definimos anteriormente
+  const next = cookieStore.get("next_url")?.value ?? "/"
+
+  // Limpa o cookie para não ser reutilizado
+  cookieStore.delete("next_url")
 
   if (code) {
-    const cookieStore = cookies()
     const supabase = createClient(cookieStore)
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // Redireciona para o destino correto após o login
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
 
-  // retorna o usuário para uma página de erro com instruções
+  // Em caso de erro, retorna para a página de erro
+  console.error("Error in auth callback:", "Could not exchange code for session")
   return NextResponse.redirect(`${origin}/auth/auth-code-error`)
 }

@@ -10,12 +10,22 @@ export async function signInWithGoogle(formData: FormData) {
   const supabase = createClient(cookieStore)
 
   const next = (formData.get("next") as string) || "/home"
-  const originPath = (formData.get("originPath") as string) || "/" // Rota de origem para redirecionar em caso de erro
+  const originPath = (formData.get("originPath") as string) || "/"
+
+  // Armazena o 'next' path em um cookie seguro e httpOnly
+  cookieStore.set("next_url", next, {
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  })
 
   const origin =
     process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
-  const redirectTo = `${origin}/auth/callback?next=${encodeURIComponent(next)}`
+
+  // A URL de redirecionamento não deve conter parâmetros dinâmicos
+  const redirectTo = `${origin}/auth/callback`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -26,7 +36,6 @@ export async function signInWithGoogle(formData: FormData) {
 
   if (error) {
     console.error("Error signing in with Google:", error)
-    // Redireciona de volta para a página de origem com a mensagem de erro
     return redirect(`${originPath}?error=${encodeURIComponent(error.message)}`)
   }
 
@@ -34,7 +43,6 @@ export async function signInWithGoogle(formData: FormData) {
     return redirect(data.url)
   }
 
-  // Redireciona de volta para a página de origem com um erro genérico
   return redirect(`${originPath}?error=Could not authenticate with Google`)
 }
 
