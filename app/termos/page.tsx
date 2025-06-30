@@ -7,8 +7,8 @@ export default function TermosPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Termos de Serviço</h1>
         <div className="prose prose-lg text-gray-600 space-y-4">
           <p>
-            Bem-vindo ao Hallow. Ao utilizar nosso aplicativo, você concorda com os seguintes termos e condições.
-            Leia-os com atenção.
+            Bem-vindo à Agape. Ao utilizar nosso aplicativo, você concorda com os seguintes termos e condições. Leia-os
+            com atenção.
           </p>
           <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">1. Uso do Aplicativo</h2>
           <p>
@@ -22,8 +22,8 @@ export default function TermosPage() {
           </p>
           <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">3. Propriedade Intelectual</h2>
           <p>
-            O serviço e seu conteúdo original, recursos e funcionalidades são e permanecerão propriedade exclusiva do
-            Hallow e de seus licenciadores.
+            O serviço e seu conteúdo original, recursos e funcionalidades são e permanecerão propriedade exclusiva da
+            Agape e de seus licenciadores.
           </p>
           <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">4. Alterações nos Termos</h2>
           <p>

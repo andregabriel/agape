@@ -1,13 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr"
-import type { Database } from "@/types/supabase"
 
-export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase URL or Anon Key")
-  }
-
-  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey)
-}
+// Padrão Singleton para garantir uma única instância do cliente Supabase no navegador.
+// Isso resolve o aviso "Multiple GoTrueClient instances".
+export const createClient = () =>
+  createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)

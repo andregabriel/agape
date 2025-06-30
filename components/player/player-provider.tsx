@@ -4,7 +4,7 @@ import { usePlayerStore } from "@/store/player-store"
 import FullPlayer from "./full-player"
 import MiniPlayer from "./mini-player"
 
-export default function PlayerProvider() {
+export function PlayerProvider() {
   const view = usePlayerStore((state) => state.view)
 
   if (view === "hidden") {

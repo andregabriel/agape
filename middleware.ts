@@ -3,19 +3,31 @@ import { createClient } from "@/lib/supabase/middleware"
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request)
-
-  // Atualiza a sessão do usuário. Essencial para o funcionamento da autenticação no lado do servidor.
   const {
     data: { session },
   } = await supabase.auth.getSession()
 
-  // Se o usuário estiver logado e tentar acessar a página de login principal, redireciona para /home
-  if (session && request.nextUrl.pathname === "/") {
+  const { pathname } = request.nextUrl
+
+  // Adicionado '/home' às rotas protegidas para exigir login.
+  const protectedRoutes = ["/home", "/eu", "/playlist"]
+
+  const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
+
+  // Se o usuário não estiver logado e tentar acessar uma rota protegida, redireciona para /login
+  if (!session && isProtectedRoute) {
+    return NextResponse.redirect(new URL("/login", request.url))
+  }
+
+  // Se o usuário estiver logado e tentar acessar a página de login ou a raiz, redireciona para /home
+  if (session && (pathname === "/login" || pathname === "/")) {
     return NextResponse.redirect(new URL("/home", request.url))
   }
 
-  // Se o usuário não estiver logado e tentar acessar uma rota protegida (ex: /home),
-  // pode-se redirecioná-lo para o login. (Lógica a ser adicionada se necessário)
+  // Se o usuário não estiver logado e acessar a raiz, redireciona para a página de login
+  if (!session && pathname === "/") {
+    return NextResponse.redirect(new URL("/login", request.url))
+  }
 
   return response
 }

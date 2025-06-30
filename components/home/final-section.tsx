@@ -8,7 +8,7 @@ export default function FinalSection() {
     <section className="py-10 md:py-16 bg-muted/50">
       <div className="container px-4 md:px-6 text-center">
         <p className="text-4xl md:text-5xl font-bold text-foreground mb-1">992,285,955</p>
-        <p className="text-sm md:text-base text-muted-foreground mb-6">Orações Rezadas com o Hallow</p>
+        <p className="text-sm md:text-base text-muted-foreground mb-6">Orações Rezadas com a Agape</p>
 
         <div className="flex justify-center space-x-3 md:space-x-4 mb-8">
           <Button variant="outline" size="sm" asChild>
@@ -45,7 +45,7 @@ export default function FinalSection() {
         >
           <Link href="/gift">
             <Gift className="h-5 w-5 mr-2" />
-            Presente Hallow
+            Presente Agape
           </Link>
         </Button>
       </div>

@@ -508,7 +508,7 @@ const kidsPrayersGridItems = [
   {
     id: "kp1",
     title: "Intro: Crianças na Fé",
-    subtitle: "Hallow Crianças",
+    subtitle: "Agape Crianças",
     details: "5 sessões",
     imageUrl: "/placeholder.svg?width=100&height=100",
     link: "/playlist/intro-criancas",
