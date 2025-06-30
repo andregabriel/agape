@@ -9,16 +9,8 @@ export async function middleware(request: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession()
 
-  const { pathname } = request.nextUrl
-
   // Se o usuário estiver logado e tentar acessar a página de login principal, redireciona para /home
-  if (session && pathname === "/") {
-    return NextResponse.redirect(new URL("/home", request.url))
-  }
-
-  // Se o usuário estiver logado e tentar acessar a página de login de admin, redireciona para /home
-  // (ou para /admin/dashboard no futuro)
-  if (session && pathname === "/admin/login") {
+  if (session && request.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL("/home", request.url))
   }
 
