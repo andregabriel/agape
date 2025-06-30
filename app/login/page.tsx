@@ -37,8 +37,9 @@ export default function LoginPage() {
     setIsGuestLoading(true)
     const { error } = await supabase.auth.signInAnonymously()
     if (!error) {
-      router.push("/home")
-      router.refresh() // Força a atualização do layout e middleware
+      // Força um recarregamento completo para a página /home.
+      // Isso garante que o middleware receba o novo cookie de sessão anônima.
+      window.location.href = "/home"
     } else {
       console.error("Anonymous sign-in error:", error)
       setIsGuestLoading(false)
@@ -46,7 +47,7 @@ export default function LoginPage() {
   }
 
   const nextUrl = searchParams.get("next") || "/home"
-  const error = searchParams.get("error")
+  const error = searchParams.get("error") // Fixed variable name
 
   return (
     <div className="flex flex-col h-screen bg-white text-gray-800 relative">
