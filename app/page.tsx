@@ -1,13 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { X, Mail } from "lucide-react" // Usando Mail para o botão de email
+import { useRouter, useSearchParams } from "next/navigation"
+import { X, Mail } from "lucide-react"
+import { signInWithGoogle } from "@/app/auth/actions"
 
-// Ícones simples para Google e Apple (idealmente seriam SVGs mais precisos)
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor">
     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -26,10 +25,15 @@ const AppleIcon = () => (
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const handleClose = () => {
-    router.push("/home") // Navega para a nova tela de início principal
+    router.push("/home")
   }
+
+  // O padrão é redirecionar para /home após o login do usuário padrão
+  const nextUrl = searchParams.get("next") || "/home"
+  const error = searchParams.get("error")
 
   return (
     <div className="flex flex-col h-screen bg-[#1E1E1E] text-white">
@@ -61,24 +65,34 @@ export default function LoginPage() {
             alt="Mãos segurando um terço"
             layout="fill"
             objectFit="cover"
-            objectPosition="center 40%" // Ajuste este valor conforme necessário
+            objectPosition="center 40%"
             priority
           />
         </div>
 
+        {error && (
+          <div className="relative z-10 mb-4 p-3 bg-red-500/20 text-red-300 border border-red-500 rounded-md">
+            <p>Erro no login: {error}</p>
+          </div>
+        )}
+
         <div className="relative z-10 w-full max-w-sm space-y-4 mb-8">
-          <Button
-            variant="outline"
-            className="w-full bg-white text-black hover:bg-gray-100 border-gray-300 py-6 rounded-full text-base font-medium flex items-center justify-center"
-            onClick={() => console.log("Login com Google")}
-          >
-            <GoogleIcon />
-            Continuar com o Google
-          </Button>
+          <form action={signInWithGoogle}>
+            {/* Este campo hidden diz para a ação de login para onde voltar */}
+            <input type="hidden" name="next" value={nextUrl} />
+            <Button
+              type="submit"
+              variant="outline"
+              className="w-full bg-white text-black hover:bg-gray-100 border-gray-300 py-6 rounded-full text-base font-medium flex items-center justify-center"
+            >
+              <GoogleIcon />
+              Continuar com o Google
+            </Button>
+          </form>
           <Button
             variant="secondary"
             className="w-full bg-white/20 text-white hover:bg-white/30 border-transparent py-6 rounded-full text-base font-medium flex items-center justify-center"
-            onClick={() => console.log("Login com E-mail")}
+            onClick={() => console.log("Login com E-mail (ainda não implementado)")}
           >
             <Mail className="w-5 h-5 mr-3" />
             Continue com E-mail
@@ -86,7 +100,7 @@ export default function LoginPage() {
           <Button
             variant="secondary"
             className="w-full bg-black/50 text-white hover:bg-black/70 border-transparent py-6 rounded-full text-base font-medium flex items-center justify-center"
-            onClick={() => console.log("Login com Apple")}
+            onClick={() => console.log("Login com Apple (ainda não implementado)")}
           >
             <AppleIcon />
             Continuar com a Apple

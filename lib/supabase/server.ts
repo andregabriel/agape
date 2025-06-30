@@ -1,34 +1,36 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr"
-import type { cookies } from "next/headers"
+import { cookies } from "next/headers"
 import type { Database } from "@/types/supabase"
 
-export function createClient(cookieStore: ReturnType<typeof cookies>) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+export function createClient(cookieStore?: ReturnType<typeof cookies>) {
+  // Se cookieStore não for fornecido, usa cookies() como padrão.
+  // Esta é a correção principal para evitar o erro 'get' of undefined.
+  const store = cookieStore ?? cookies()
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase URL or Anon Key")
-  }
-
-  return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value
-      },
-      set(name: string, value: string, options: CookieOptions) {
-        try {
-          cookieStore.set({ name, value, ...options })
-        } catch (error) {
-          // The `set` method was called from a Server Component.
-        }
-      },
-      remove(name: string, options: CookieOptions) {
-        try {
-          cookieStore.set({ name, value: "", ...options })
-        } catch (error) {
-          // The `delete` method was called from a Server Component.
-        }
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return store.get(name)?.value
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          try {
+            store.set({ name, value, ...options })
+          } catch (error) {
+            // O método `set` foi chamado de um Server Component.
+            // Isso pode ser ignorado se você tiver um middleware atualizando as sessões.
+          }
+        },
+        remove(name: string, options: CookieOptions) {
+          try {
+            store.set({ name, value: "", ...options })
+          } catch (error) {
+            // O método `delete` foi chamado de um Server Component.
+          }
+        },
       },
     },
-  })
+  )
 }
