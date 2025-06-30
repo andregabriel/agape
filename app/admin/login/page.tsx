@@ -1,6 +1,6 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { signInWithGoogle } from "@/app/auth/actions"
 
@@ -16,6 +16,7 @@ const GoogleIcon = () => (
 
 export default function AdminLoginPage() {
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   // O padrão é redirecionar para /admin após o login do admin
   const nextUrl = searchParams.get("next") || "/admin"
   const error = searchParams.get("error")
@@ -37,6 +38,7 @@ export default function AdminLoginPage() {
         <form action={signInWithGoogle}>
           {/* Este campo hidden diz para a ação de login para onde voltar */}
           <input type="hidden" name="next" value={nextUrl} />
+          <input type="hidden" name="originPath" value={pathname} />
           <Button type="submit" className="w-full bg-transparent" variant="outline">
             <GoogleIcon />
             Entrar com Google

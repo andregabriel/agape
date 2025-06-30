@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { X, Mail } from "lucide-react"
 import { signInWithGoogle } from "@/app/auth/actions"
 
@@ -26,6 +26,7 @@ const AppleIcon = () => (
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   const handleClose = () => {
     router.push("/home")
@@ -80,6 +81,7 @@ export default function LoginPage() {
           <form action={signInWithGoogle}>
             {/* Este campo hidden diz para a ação de login para onde voltar */}
             <input type="hidden" name="next" value={nextUrl} />
+            <input type="hidden" name="originPath" value={pathname} />
             <Button
               type="submit"
               variant="outline"
