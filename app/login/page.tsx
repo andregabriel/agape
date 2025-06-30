@@ -1,11 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { X, Mail, User } from "lucide-react"
+import { X, Mail, User, Loader2 } from "lucide-react"
 import { signInWithGoogle } from "@/app/auth/actions"
+import { getSupabaseBrowserClient } from "@/lib/supabase/client"
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor">
@@ -27,9 +29,20 @@ export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
+  const [isGuestLoading, setIsGuestLoading] = useState(false)
 
-  const handleClose = () => {
-    router.push("/home")
+  const supabase = getSupabaseBrowserClient()
+
+  const handleGuestLogin = async () => {
+    setIsGuestLoading(true)
+    const { error } = await supabase.auth.signInAnonymously()
+    if (!error) {
+      router.push("/home")
+      router.refresh() // Força a atualização do layout e middleware
+    } else {
+      console.error("Anonymous sign-in error:", error)
+      setIsGuestLoading(false)
+    }
   }
 
   const nextUrl = searchParams.get("next") || "/home"
@@ -41,11 +54,12 @@ export default function LoginPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={handleClose}
+          onClick={handleGuestLogin}
+          disabled={isGuestLoading}
           className="bg-gray-100 hover:bg-gray-200 rounded-full"
-          aria-label="Fechar"
+          aria-label="Entrar como convidado"
         >
-          <X className="h-5 w-5 text-gray-600" />
+          {isGuestLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <X className="h-5 w-5 text-gray-600" />}
         </Button>
       </header>
 
@@ -92,9 +106,10 @@ export default function LoginPage() {
           </Button>
           <Button
             className="w-full bg-gray-50 text-gray-700 hover:bg-gray-100 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
-            onClick={() => router.push("/home")}
+            onClick={handleGuestLogin}
+            disabled={isGuestLoading}
           >
-            <User className="w-5 h-5 mr-3" />
+            {isGuestLoading ? <Loader2 className="w-5 h-5 mr-3 animate-spin" /> : <User className="w-5 h-5 mr-3" />}
             Continue como Convidado
           </Button>
         </div>
