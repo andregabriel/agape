@@ -11,14 +11,15 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Se o usuário estiver logado e tentar acessar a página de login, redireciona para /home
-  if (session && (pathname === "/" || pathname === "/admin/login")) {
-    const homeUrl = new URL(session.user.app_metadata.provider === "google" ? "/home" : "/admin", request.url)
-    // A lógica acima pode ser simplificada se não houver distinção de "home" por provedor
-    // Por enquanto, vamos assumir que um usuário logado na raiz deve ir para /home
-    if (pathname === "/") {
-      return NextResponse.redirect(new URL("/home", request.url))
-    }
+  // Se o usuário estiver logado e tentar acessar a página de login principal, redireciona para /home
+  if (session && pathname === "/") {
+    return NextResponse.redirect(new URL("/home", request.url))
+  }
+
+  // Se o usuário estiver logado e tentar acessar a página de login de admin, redireciona para /home
+  // (ou para /admin/dashboard no futuro)
+  if (session && pathname === "/admin/login") {
+    return NextResponse.redirect(new URL("/home", request.url))
   }
 
   // Se o usuário não estiver logado e tentar acessar uma rota protegida (ex: /home),
@@ -35,7 +36,8 @@ export const config = {
      * - _next/image (otimização de imagem)
      * - favicon.ico (arquivo de favicon)
      * - images/ (arquivos de imagem)
+     * - auth/ (rotas de autenticação)
      */
-    "/((?!_next/static|_next/image|favicon.ico|images|auth/callback).*)",
+    "/((?!_next/static|_next/image|favicon.ico|images|auth).*)",
   ],
 }
