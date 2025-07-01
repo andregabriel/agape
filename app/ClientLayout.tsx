@@ -1,28 +1,40 @@
 "use client"
 
 import type React from "react"
-
 import { usePathname } from "next/navigation"
-import BottomNav from "@/components/bottom-nav"
+import { supabase } from "@/lib/supabase/browser"
+import { SessionContextProvider } from "@supabase/auth-helpers-react"
 import { PlayerProvider } from "@/components/player/player-provider"
 import { Toaster } from "@/components/ui/sonner"
+import BottomNav from "@/components/bottom-nav"
 import { ThemeProvider } from "@/components/theme-provider"
+
+// A instância singleton é obtida aqui, uma única vez.
+const sb = supabase()
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const showBottomNav = !["/login", "/admin/login"].includes(pathname)
+  const showBottomNav = !["/login", "/admin/login", "/auth/confirm", "/termos"].includes(pathname)
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <main className="relative h-screen w-screen overflow-hidden bg-background font-sans text-foreground">
-            {children}
-          </main>
-          {showBottomNav && <BottomNav />}
-          <PlayerProvider />
-          <Toaster />
-        </ThemeProvider>
+        {/* O SessionContextProvider é montado aqui e em nenhum outro lugar. */}
+        <SessionContextProvider supabaseClient={sb}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <PlayerProvider>
+              <div className="relative flex flex-col min-h-screen bg-background">
+                <main className="flex-1 pb-24">{children}</main>
+                {showBottomNav && (
+                  <footer className="fixed bottom-0 left-0 right-0 z-10">
+                    <BottomNav />
+                  </footer>
+                )}
+              </div>
+              <Toaster />
+            </PlayerProvider>
+          </ThemeProvider>
+        </SessionContextProvider>
       </body>
     </html>
   )

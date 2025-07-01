@@ -1,13 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { X, Mail, User, Loader2 } from "lucide-react"
-import { signInWithGoogle } from "@/app/auth/actions"
-import { getSupabaseBrowserClient } from "@/lib/supabase/client"
+import { usePathname, useSearchParams } from "next/navigation"
+import { X, Mail, User, Loader2, ArrowLeft, Pencil } from "lucide-react"
+import { signInWithGoogle, loginWithEmail, signupWithEmail, checkUserExists } from "@/app/auth/actions"
+import { supabase } from "@/lib/supabase/browser" // Importando o singleton
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor">
@@ -26,28 +28,220 @@ const AppleIcon = () => (
 )
 
 export default function LoginPage() {
-  const router = useRouter()
+  const sb = supabase() // Obtendo a instância já existente
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const [isGuestLoading, setIsGuestLoading] = useState(false)
 
-  const supabase = getSupabaseBrowserClient()
+  // State for general flow
+  const [isGuestLoading, setIsGuestLoading] = useState(false)
+  const [showEmailFlow, setShowEmailFlow] = useState(false)
+  const [step, setStep] = useState("enterEmail") // 'enterEmail', 'enterPassword', 'register'
+  const [flowError, setFlowError] = useState("")
+
+  // State for form fields
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [whatsapp, setWhatsapp] = useState("")
+
+  // State for transitions/loading
+  const [isChecking, startChecking] = useTransition()
+  const [isSubmitting, startSubmitting] = useTransition()
+
+  const nextUrl = searchParams.get("next") || "/home"
+  const serverError = searchParams.get("error")
+  const initialEmail = searchParams.get("email")
+
+  useEffect(() => {
+    if (serverError) {
+      setFlowError(serverError)
+      setShowEmailFlow(true)
+      if (initialEmail) {
+        setEmail(initialEmail)
+        setStep("enterPassword") // Assume user exists if redirected with error and email
+      }
+    }
+  }, [serverError, initialEmail])
 
   const handleGuestLogin = async () => {
     setIsGuestLoading(true)
-    const { error } = await supabase.auth.signInAnonymously()
+    const { error } = await sb.auth.signInAnonymously()
     if (!error) {
-      // Força um recarregamento completo para a página /home.
-      // Isso garante que o middleware receba o novo cookie de sessão anônima.
       window.location.href = "/home"
     } else {
-      console.error("Anonymous sign-in error:", error)
+      setFlowError(error.message)
       setIsGuestLoading(false)
     }
   }
 
-  const nextUrl = searchParams.get("next") || "/home"
-  const error = searchParams.get("error") // Fixed variable name
+  const handleEmailContinue = async () => {
+    setFlowError("")
+    if (!email) {
+      setFlowError("Por favor, insira seu e-mail.")
+      return
+    }
+    startChecking(async () => {
+      const { exists, error } = await checkUserExists(email)
+      if (error) {
+        setFlowError(error)
+      } else if (exists) {
+        setStep("enterPassword")
+      } else {
+        setStep("register")
+      }
+    })
+  }
+
+  const resetFlow = () => {
+    setShowEmailFlow(false)
+    setStep("enterEmail")
+    setEmail("")
+    setPassword("")
+    setFirstName("")
+    setLastName("")
+    setWhatsapp("")
+    setFlowError("")
+  }
+
+  const editEmail = () => {
+    setStep("enterEmail")
+    setPassword("")
+  }
+
+  const renderEmailFlow = () => (
+    <div className="w-[280px] mx-auto">
+      <Button variant="ghost" onClick={resetFlow} className="mb-2">
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Voltar
+      </Button>
+
+      {step === "enterEmail" && (
+        <div className="space-y-4 pt-4">
+          <Label htmlFor="email">Qual é o seu e-mail?</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            required
+            placeholder="seu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Button onClick={handleEmailContinue} disabled={isChecking} className="w-full">
+            {isChecking ? <Loader2 className="animate-spin" /> : "Continuar"}
+          </Button>
+        </div>
+      )}
+
+      {step === "enterPassword" && (
+        <form
+          action={(formData) => {
+            startSubmitting(async () => {
+              await loginWithEmail(formData)
+            })
+          }}
+          className="space-y-4 pt-4"
+        >
+          <div className="flex items-center justify-between">
+            <Label>E-mail</Label>
+            <Button variant="link" size="sm" type="button" onClick={editEmail} className="p-0 h-auto">
+              <Pencil className="w-3 h-3 mr-1" /> Trocar
+            </Button>
+          </div>
+          <Input readOnly value={email} className="bg-gray-100" />
+          <input type="hidden" name="email" value={email} />
+          <div>
+            <Label htmlFor="login-password">Senha</Label>
+            <Input id="login-password" name="password" type="password" required />
+          </div>
+          <Button type="submit" disabled={isSubmitting} className="w-full">
+            {isSubmitting ? <Loader2 className="animate-spin" /> : "Entrar"}
+          </Button>
+        </form>
+      )}
+
+      {step === "register" && (
+        <form
+          action={(formData) => {
+            startSubmitting(async () => {
+              await signupWithEmail(formData)
+            })
+          }}
+          className="space-y-3 pt-4"
+        >
+          <div className="flex items-center justify-between">
+            <Label>E-mail</Label>
+            <Button variant="link" size="sm" type="button" onClick={editEmail} className="p-0 h-auto">
+              <Pencil className="w-3 h-3 mr-1" /> Trocar
+            </Button>
+          </div>
+          <Input readOnly value={email} className="bg-gray-100" />
+          <input type="hidden" name="email" value={email} />
+          <div>
+            <Label htmlFor="firstName">Primeiro Nome</Label>
+            <Input id="firstName" name="firstName" type="text" required />
+          </div>
+          <div>
+            <Label htmlFor="lastName">Sobrenome</Label>
+            <Input id="lastName" name="lastName" type="text" required />
+          </div>
+          <div>
+            <Label htmlFor="whatsapp">WhatsApp</Label>
+            <Input id="whatsapp" name="whatsapp" type="tel" placeholder="(XX) XXXXX-XXXX" />
+          </div>
+          <div>
+            <Label htmlFor="signup-password">Crie uma Senha</Label>
+            <Input id="signup-password" name="password" type="password" required minLength={6} />
+            <p className="text-xs text-gray-500 mt-1">Mínimo de 6 caracteres.</p>
+          </div>
+          <Button type="submit" disabled={isSubmitting} className="w-full pt-2">
+            {isSubmitting ? <Loader2 className="animate-spin" /> : "Criar conta e continuar"}
+          </Button>
+        </form>
+      )}
+    </div>
+  )
+
+  const renderMainButtons = () => (
+    <div className="w-[280px] mx-auto space-y-3">
+      <form action={signInWithGoogle}>
+        <input type="hidden" name="next" value={nextUrl} />
+        <input type="hidden" name="originPath" value={pathname} />
+        <Button
+          type="submit"
+          className="w-full bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
+        >
+          <GoogleIcon />
+          Continue com o Google
+        </Button>
+      </form>
+      <Button
+        variant="secondary"
+        className="w-full bg-gray-200 text-gray-800 hover:bg-gray-300 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
+        onClick={() => alert("Login com Apple ainda não implementado.")}
+      >
+        <AppleIcon />
+        Continue com a Apple
+      </Button>
+      <Button
+        variant="secondary"
+        className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
+        onClick={() => setShowEmailFlow(true)}
+      >
+        <Mail className="w-5 h-5 mr-3" />
+        Continue com E-mail
+      </Button>
+      <Button
+        className="w-full bg-gray-50 text-gray-700 hover:bg-gray-100 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
+        onClick={handleGuestLogin}
+        disabled={isGuestLoading}
+      >
+        {isGuestLoading ? <Loader2 className="w-5 h-5 mr-3 animate-spin" /> : <User className="w-5 h-5 mr-3" />}
+        Continue como Convidado
+      </Button>
+    </div>
+  )
 
   return (
     <div className="flex flex-col h-screen bg-white text-gray-800 relative">
@@ -71,49 +265,13 @@ export default function LoginPage() {
       </main>
 
       <div className="px-6 pb-8">
-        {error && (
+        {flowError && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-md text-center text-sm">
-            <p>Erro no login: {error}</p>
+            <p>{flowError}</p>
           </div>
         )}
 
-        <div className="w-[280px] mx-auto space-y-3">
-          <form action={signInWithGoogle}>
-            <input type="hidden" name="next" value={nextUrl} />
-            <input type="hidden" name="originPath" value={pathname} />
-            <Button
-              type="submit"
-              className="w-full bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
-            >
-              <GoogleIcon />
-              Continue com o Google
-            </Button>
-          </form>
-          <Button
-            variant="secondary"
-            className="w-full bg-gray-200 text-gray-800 hover:bg-gray-300 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
-            onClick={() => console.log("Login com Apple (ainda não implementado)")}
-          >
-            <AppleIcon />
-            Continue com a Apple
-          </Button>
-          <Button
-            variant="secondary"
-            className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
-            onClick={() => console.log("Login com E-mail (ainda não implementado)")}
-          >
-            <Mail className="w-5 h-5 mr-3" />
-            Continue com E-mail
-          </Button>
-          <Button
-            className="w-full bg-gray-50 text-gray-700 hover:bg-gray-100 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
-            onClick={handleGuestLogin}
-            disabled={isGuestLoading}
-          >
-            {isGuestLoading ? <Loader2 className="w-5 h-5 mr-3 animate-spin" /> : <User className="w-5 h-5 mr-3" />}
-            Continue como Convidado
-          </Button>
-        </div>
+        {showEmailFlow ? renderEmailFlow() : renderMainButtons()}
       </div>
 
       <footer className="pb-8 px-6 text-center">
