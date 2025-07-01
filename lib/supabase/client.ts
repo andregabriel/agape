@@ -1,6 +1,7 @@
 import { createBrowserClient } from "@supabase/ssr"
 import type { Database } from "@/types/supabase"
 import type { SupabaseClient } from "@supabase/supabase-js"
+import { supabase } from "./browser"
 
 let browserClient: SupabaseClient<Database> | undefined
 
@@ -17,10 +18,9 @@ export function getSupabaseBrowser(): SupabaseClient<Database> {
   return browserClient
 }
 
-/** Alias mantido por retro-compatibilidade com trechos de código que
- * ainda fazem `import { createClient } from "@/lib/supabase/client"`.
- * Internamente ele reaproveita o singleton já criado.
- */
-export function createClient(): SupabaseClient<Database> {
-  return getSupabaseBrowser()
+// Este arquivo atua como um adaptador para importações legadas.
+// Ele garante que qualquer parte do código que ainda chame `createClient`
+// receba a instância singleton correta do cliente Supabase do navegador.
+export function createClient() {
+  return supabase()
 }
