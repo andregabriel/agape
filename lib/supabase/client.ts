@@ -1,26 +1,15 @@
 import { createBrowserClient } from "@supabase/ssr"
 import type { Database } from "@/types/supabase"
-import type { SupabaseClient } from "@supabase/supabase-js"
-import { supabase } from "./browser"
 
-let browserClient: SupabaseClient<Database> | undefined
+// Padrão Singleton robusto que reutiliza a instância entre os reloads do HMR.
+// Usamos `createBrowserClient` da biblioteca @supabase/ssr, que é a
+// abordagem moderna e correta para o Next.js App Router.
+const supabase =
+  (globalThis as any).__supabase_client ??
+  ((globalThis as any).__supabase_client = createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  ))
 
-export function getSupabaseBrowser(): SupabaseClient<Database> {
-  if (!browserClient) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error("Missing Supabase URL or Anon Key in client environment")
-    }
-    browserClient = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey)
-  }
-  return browserClient
-}
-
-// Este arquivo atua como um adaptador para importações legadas.
-// Ele garante que qualquer parte do código que ainda chame `createClient`
-// receba a instância singleton correta do cliente Supabase do navegador.
-export function createClient() {
-  return supabase()
-}
+export const createClient = () => supabase // <── NEW – satisfies modules that import { createClient }
+export default supabase

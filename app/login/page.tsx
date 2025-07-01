@@ -7,7 +7,7 @@ import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { X, Mail, User, Loader2, ArrowLeft, Pencil } from "lucide-react"
 import { signInWithGoogle, loginWithEmail, signupWithEmail, checkUserExists } from "@/app/auth/actions"
-import { supabase } from "@/lib/supabase/browser" // Importando o singleton
+import supabase from "@/lib/supabase/client" // Importando o singleton
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
@@ -28,7 +28,6 @@ const AppleIcon = () => (
 )
 
 export default function LoginPage() {
-  const sb = supabase() // Obtendo a instância já existente
   const searchParams = useSearchParams()
   const pathname = usePathname()
 
@@ -66,7 +65,7 @@ export default function LoginPage() {
 
   const handleGuestLogin = async () => {
     setIsGuestLoading(true)
-    const { error } = await sb.auth.signInAnonymously()
+    const { error } = await supabase.auth.signInAnonymously()
     if (!error) {
       window.location.href = "/home"
     } else {

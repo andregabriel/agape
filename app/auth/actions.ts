@@ -1,85 +1,83 @@
 "use server"
 
-import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { revalidatePath } from "next/cache"
-import { supabaseAdmin } from "@/lib/supabase/admin"
 
-export async function checkUserExists(email: string) {
-  if (!email) {
-    return { exists: false, error: "O e-mail é obrigatório." }
+export async function signInWithGoogle() {
+  const supabase = createClient()
+  const origin = process.env.NEXT_PUBLIC_SITE_URL
+
+  if (!origin) {
+    return redirect("/login?message=Configuration error: Site URL not set.")
   }
-  try {
-    const { data, error } = await supabaseAdmin.auth.admin.getUserByEmail(email)
-
-    if (error) {
-      if (error.name === "UserNotFoundError" || (error as any).status === 404) {
-        return { exists: false, error: null }
-      }
-      console.error("Error checking user by email:", error)
-      return { exists: false, error: "Erro ao verificar o e-mail." }
-    }
-
-    return { exists: !!data.user, error: null }
-  } catch (e) {
-    console.error("Unexpected error in checkUserExists:", e)
-    return { exists: false, error: "Ocorreu um erro inesperado." }
-  }
-}
-
-export async function signInWithGoogle(formData: FormData) {
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
-
-  const next = (formData.get("next") as string) || "/home"
-  const originPath = (formData.get("originPath") as string) || "/"
-
-  cookieStore.set("next_url", next, {
-    path: "/",
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-  })
-
-  const origin =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
-
-  const redirectTo = `${origin}/auth/callback`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: redirectTo,
+      redirectTo: `${origin}/auth/callback`,
     },
   })
 
   if (error) {
     console.error("Error signing in with Google:", error)
-    return redirect(`${originPath}?error=${encodeURIComponent(error.message)}`)
+    return redirect("/login?message=Could not authenticate with Google")
   }
 
-  if (data.url) {
-    return redirect(data.url)
+  return redirect(data.url)
+}
+
+export async function signInWithApple() {
+  const supabase = createClient()
+  const origin = process.env.NEXT_PUBLIC_SITE_URL
+
+  if (!origin) {
+    return redirect("/login?message=Configuration error: Site URL not set.")
   }
 
-  return redirect(`${originPath}?error=Could not authenticate with Google`)
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "apple",
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+    },
+  })
+
+  if (error) {
+    console.error("Error signing in with Apple:", error)
+    return redirect("/login?message=Could not authenticate with Apple")
+  }
+
+  return redirect(data.url)
 }
 
-export async function signOutUser() {
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
-  await supabase.auth.signOut()
-  revalidatePath("/", "layout")
-  redirect("/login")
-}
-
-export async function loginWithEmail(formData: FormData) {
+export async function signUp(formData: FormData) {
+  const origin = process.env.NEXT_PUBLIC_SITE_URL
   const email = formData.get("email") as string
   const password = formData.get("password") as string
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = createClient()
+
+  if (!origin) {
+    return redirect("/login?message=Configuration error: Site URL not set.")
+  }
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${origin}/auth/confirm`,
+    },
+  })
+
+  if (error) {
+    return redirect(`/login?message=${error.message}`)
+  }
+
+  return redirect("/login?message=Check email to continue sign in process")
+}
+
+export async function signIn(formData: FormData) {
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+  const supabase = createClient()
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -87,89 +85,60 @@ export async function loginWithEmail(formData: FormData) {
   })
 
   if (error) {
-    return redirect(
-      `/login?error=${encodeURIComponent("Credenciais inválidas. Verifique seu e-mail e senha.")}&showEmail=true&email=${encodeURIComponent(email)}`,
-    )
+    return redirect(`/login?message=${error.message}`)
   }
 
-  revalidatePath("/", "layout")
   return redirect("/home")
 }
 
+export async function signOut() {
+  const supabase = createClient()
+  await supabase.auth.signOut()
+  return redirect("/login")
+}
+
+// Re-export helpers expected elsewhere  ────────────────────────────────────
+export async function loginWithEmail(formData: FormData) {
+  // Re-use the existing signIn (email/password)
+  return signIn(formData)
+}
+
 export async function signupWithEmail(formData: FormData) {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const firstName = formData.get("firstName") as string
-  const lastName = formData.get("lastName") as string
-  const whatsapp = formData.get("whatsapp") as string
+  // Re-use the existing signUp (email/password)
+  return signUp(formData)
+}
 
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
-
-  const origin =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://{process.env.VERCEL_URL}` : "http://localhost:3000")
-
-  const { data, error } = await supabase.auth.signUp({
+export async function checkUserExists(email: string): Promise<boolean> {
+  const supabase = createClient()
+  // Simple existence check against the auth users table
+  const { data, error } = await supabase.auth.admin.listUsers({
     email,
-    password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
-      data: {
-        first_name: firstName,
-        last_name: lastName,
-        whatsapp: whatsapp,
-      },
-    },
   })
-
   if (error) {
-    return redirect(
-      `/login?error=${encodeURIComponent(error.message)}&showEmail=true&email=${encodeURIComponent(email)}`,
-    )
+    console.error("Error checking user existence:", error)
+    return false
   }
-
-  // Atualiza o perfil recém-criado com os dados adicionais
-  if (data.user) {
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({
-        first_name: firstName,
-        last_name: lastName,
-        whatsapp: whatsapp,
-      })
-      .eq("id", data.user.id)
-
-    if (profileError) {
-      console.error("Error updating profile:", profileError)
-      // Opcional: decidir como lidar com este erro. O usuário já foi criado.
-    }
-  }
-
-  return redirect("/auth/confirm")
+  return (data?.users?.length ?? 0) > 0
 }
 
 export async function loginAdminWithEmail(formData: FormData) {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const nextUrl = (formData.get("next") as string) || "/admin"
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  // Log in first
+  await signIn(formData)
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+  // Verify the logged-in user has an `is_admin` claim or profile flag
+  const supabase = createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  if (error) {
-    return redirect(`/admin/login?error=${encodeURIComponent("Credenciais de admin inválidas.")}`)
-  }
+  // You can adapt this check to your exact schema.
+  const isAdmin = user?.user_metadata?.is_admin || user?.role === "admin" // fallback if you store custom role
 
-  if (data.user?.email !== "andrepvgabriel@gmail.com") {
+  if (!isAdmin) {
+    // immediately sign out and redirect to normal login
     await supabase.auth.signOut()
-    return redirect(`/admin/login?error=${encodeURIComponent("Acesso não autorizado.")}`)
+    return redirect("/login?message=Você não possui permissões de administrador")
   }
 
-  revalidatePath("/", "layout")
-  return redirect(nextUrl)
+  return redirect("/admin") // success path
 }
