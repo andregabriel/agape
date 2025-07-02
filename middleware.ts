@@ -2,41 +2,59 @@ import { NextResponse, type NextRequest } from "next/server"
 import { createClient } from "@/lib/supabase/middleware"
 
 export async function middleware(request: NextRequest) {
-  const { supabase, response } = createClient(request)
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
   const { pathname } = request.nextUrl
 
-  // --- Redireciona usuários LOGADOS ---
-  // Se o usuário está logado e tenta acessar a página de login, redireciona para /home.
-  if (session && pathname.startsWith("/login")) {
-    return NextResponse.redirect(new URL("/home", request.url))
-  }
-
-  // --- Redireciona usuários NÃO LOGADOS ---
-  // Define as rotas que são públicas e não precisam de login.
-  const publicRoutes = ["/login", "/termos", "/auth/callback", "/auth/confirm"]
-
-  // Verifica se a rota atual é pública.
-  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route))
-
-  // Se a rota NÃO é pública e o usuário NÃO está logado, redireciona para /login.
-  if (!isPublicRoute && !session) {
-    const redirectUrl = new URL("/login", request.url)
-    // Preserva a URL que o usuário tentou acessar para redirecioná-lo após o login.
-    redirectUrl.searchParams.set("next", pathname)
-    return NextResponse.redirect(redirectUrl)
-  }
-
-  // Se o usuário não está logado e acessa a raiz, redireciona para o login.
-  if (!session && pathname === "/") {
+  // Se o usuário acessa a raiz, redireciona para o login sempre
+  if (pathname === "/") {
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
-  // Se nenhuma das condições acima for atendida, permite que a requisição continue normalmente.
-  return response
+  try {
+    // Tenta conectar com Supabase apenas se as variáveis estão configuradas corretamente
+    const hasValidSupabaseConfig = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+      !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder") &&
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes("placeholder")
+
+    if (!hasValidSupabaseConfig) {
+      // Se Supabase não está configurado, permite acesso a todas as rotas
+      return NextResponse.next()
+    }
+
+    const { supabase, response } = createClient(request)
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    // --- Redireciona usuários LOGADOS ---
+    // Se o usuário está logado e tenta acessar a página de login, redireciona para /home.
+    if (session && pathname.startsWith("/login")) {
+      return NextResponse.redirect(new URL("/home", request.url))
+    }
+
+    // --- Redireciona usuários NÃO LOGADOS ---
+    // Define as rotas que são públicas e não precisam de login.
+    const publicRoutes = ["/login", "/termos", "/auth/callback", "/auth/confirm"]
+
+    // Verifica se a rota atual é pública.
+    const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route))
+
+    // Se a rota NÃO é pública e o usuário NÃO está logado, redireciona para /login.
+    if (!isPublicRoute && !session) {
+      const redirectUrl = new URL("/login", request.url)
+      // Preserva a URL que o usuário tentou acessar para redirecioná-lo após o login.
+      redirectUrl.searchParams.set("next", pathname)
+      return NextResponse.redirect(redirectUrl)
+    }
+
+    // Se nenhuma das condições acima for atendida, permite que a requisição continue normalmente.
+    return response
+  } catch (error) {
+    // Se houver erro com Supabase, permite acesso a todas as rotas
+    console.log("Middleware Supabase error (gracefully handled):", error)
+    return NextResponse.next()
+  }
 }
 
 export const config = {
