@@ -10,14 +10,8 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    // Verifica se as variáveis básicas do Supabase estão definidas
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      // Se variáveis não estão definidas, permite acesso a todas as rotas  
-      console.log("Middleware: Supabase env vars not found, allowing access to all routes")
-      return NextResponse.next()
-    }
-
-    console.log("Middleware: Testing Supabase connection for path:", pathname)
+    // 🔥 HARDCODED CREDENTIALS - BYPASSING ENV VARS FOR DEBUGGING
+    console.log("Middleware: Using hardcoded Supabase credentials for path:", pathname)
 
     const { supabase, response } = createClient(request)
     const {

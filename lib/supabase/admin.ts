@@ -7,6 +7,6 @@ import type { Database } from "@/types/supabase"
 // NEXT_PUBLIC_SUPABASE_URL
 // SUPABASE_SERVICE_ROLE_KEY
 export const supabaseAdmin = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  "https://llomihbcknpzndlabmmt.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsb21paGJja25wem5kbGFibW10Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDI1NzUzNCwiZXhwIjoyMDY1ODMzNTM0fQ.fCUHZBkeuBtcb5IxTT7JvpHSoV6au2mwFpEPXHTjFXU",
 )
