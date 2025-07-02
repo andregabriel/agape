@@ -6,7 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { X, Mail, User, Loader2, ArrowLeft, Pencil } from "lucide-react"
-import { signInWithGoogle, loginWithEmail, signupWithEmail, checkUserExists } from "@/app/auth/actions"
+import { signInWithGoogle, signInWithApple, loginWithEmail, signupWithEmail, checkUserExists } from "@/app/auth/actions"
 import { useSupabaseClient } from "@/components/providers/supabase-provider"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -216,14 +216,18 @@ export default function LoginPage() {
           Continue com o Google
         </Button>
       </form>
-      <Button
-        variant="secondary"
-        className="w-full bg-gray-200 text-gray-800 hover:bg-gray-300 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
-        onClick={() => alert("Login com Apple ainda não implementado.")}
-      >
-        <AppleIcon />
-        Continue com a Apple
-      </Button>
+      <form action={signInWithApple}>
+        <input type="hidden" name="next" value={nextUrl} />
+        <input type="hidden" name="originPath" value={pathname} />
+        <Button
+          type="submit"
+          variant="secondary"
+          className="w-full bg-gray-200 text-gray-800 hover:bg-gray-300 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
+        >
+          <AppleIcon />
+          Continue com a Apple
+        </Button>
+      </form>
       <Button
         variant="secondary"
         className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"

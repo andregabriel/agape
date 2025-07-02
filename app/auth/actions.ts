@@ -26,6 +26,29 @@ export async function signInWithGoogle() {
   return redirect(data.url)
 }
 
+export async function signInWithGoogleAdmin() {
+  const supabase = createClient()
+  const origin = process.env.NEXT_PUBLIC_SITE_URL
+
+  if (!origin) {
+    return redirect("/admin/login?message=Configuration error: Site URL not set.")
+  }
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback?type=admin`,
+    },
+  })
+
+  if (error) {
+    console.error("Error signing in with Google:", error)
+    return redirect("/admin/login?message=Could not authenticate with Google")
+  }
+
+  return redirect(data.url)
+}
+
 export async function signInWithApple() {
   const supabase = createClient()
   const origin = process.env.NEXT_PUBLIC_SITE_URL

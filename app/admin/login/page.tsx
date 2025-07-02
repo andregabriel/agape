@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { loginAdminWithEmail, signInWithGoogle } from "@/app/auth/actions"
+import { loginAdminWithEmail, signInWithGoogleAdmin } from "@/app/auth/actions"
 import Image from "next/image"
 
 const GoogleIcon = () => (
@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        <form action={signInWithGoogle}>
+        <form action={signInWithGoogleAdmin}>
           <input type="hidden" name="next" value={nextUrl} />
           <input type="hidden" name="originPath" value="/admin/login" />
           <Button type="submit" variant="outline" className="w-full bg-transparent">
