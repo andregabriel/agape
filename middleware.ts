@@ -10,15 +10,10 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    // Tenta conectar com Supabase apenas se as variáveis estão configuradas corretamente
-    const hasValidSupabaseConfig = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-      !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder") &&
-      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes("placeholder")
-
-    if (!hasValidSupabaseConfig) {
-      // Se Supabase não está configurado, permite acesso a todas as rotas
+    // Verifica se as variáveis básicas do Supabase estão definidas
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      // Se variáveis não estão definidas, permite acesso a todas as rotas  
+      console.log("Supabase env vars not found, allowing access to all routes")
       return NextResponse.next()
     }
 
