@@ -13,9 +13,11 @@ export async function middleware(request: NextRequest) {
     // Verifica se as variáveis básicas do Supabase estão definidas
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       // Se variáveis não estão definidas, permite acesso a todas as rotas  
-      console.log("Supabase env vars not found, allowing access to all routes")
+      console.log("Middleware: Supabase env vars not found, allowing access to all routes")
       return NextResponse.next()
     }
+
+    console.log("Middleware: Testing Supabase connection for path:", pathname)
 
     const { supabase, response } = createClient(request)
     const {
@@ -30,7 +32,7 @@ export async function middleware(request: NextRequest) {
 
     // --- Redireciona usuários NÃO LOGADOS ---
     // Define as rotas que são públicas e não precisam de login.
-    const publicRoutes = ["/login", "/termos", "/auth/callback", "/auth/confirm"]
+    const publicRoutes = ["/login", "/termos", "/auth/callback", "/auth/confirm", "/debug-login"]
 
     // Verifica se a rota atual é pública.
     const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route))
@@ -47,7 +49,8 @@ export async function middleware(request: NextRequest) {
     return response
   } catch (error) {
     // Se houver erro com Supabase, permite acesso a todas as rotas
-    console.log("Middleware Supabase error (gracefully handled):", error)
+    console.error("Middleware Supabase error (gracefully handled):", error)
+    console.log("Middleware: Allowing access due to error for path:", pathname)
     return NextResponse.next()
   }
 }
