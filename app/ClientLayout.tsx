@@ -8,7 +8,7 @@ import { PlayerProvider } from "@/components/player/player-provider"
 import SupabaseProvider from "@/components/providers/supabase-provider"
 
 // Initialize console capture for development environments only
-if (process.env.NODE_ENV === "development") {
+if (typeof window !== "undefined" && window.location.hostname === "localhost") {
   import("@/lib/dev/consoleCapture").then(({ initConsoleCapture }) => {
     initConsoleCapture()
   })

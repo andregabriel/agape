@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { useSupabaseClient, useUser } from "@/components/providers/supabase-provider"
 import type { User } from "@supabase/supabase-js"
 // Importando o novo HomeHeader que inclui avatar e filtros
 import HomeHeader from "@/components/home/home-header"
@@ -610,7 +610,7 @@ const orderedCategories = [
 ]
 
 export default function NewHomePage() {
-  const [user, setUser] = useState<User | null>(null)
+  const contextUser = useUser()
   const [isGuest, setIsGuest] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -618,30 +618,17 @@ export default function NewHomePage() {
     // Check for guest status from sessionStorage
     const guestStatus = sessionStorage.getItem("isGuest") === "true"
     setIsGuest(guestStatus)
-
-    const supabase = createClient()
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      setUser(data.user)
-      setLoading(false)
-    }
-
-    // If not a guest, check for an authenticated user
-    if (!guestStatus) {
-      checkUser()
-    } else {
-      setLoading(false)
-    }
+    setLoading(false)
   }, [])
 
   const getUserNameInitial = () => {
-    if (isGuest || !user) return "C" // Convidado
-    return user.user_metadata?.full_name?.[0] || user.email?.[0] || "A"
+    if (isGuest || !contextUser) return "C" // Convidado
+    return contextUser.user_metadata?.full_name?.[0] || contextUser.email?.[0] || "A"
   }
 
   const getUserImageUrl = () => {
-    if (isGuest || !user) return undefined
-    return user.user_metadata?.avatar_url
+    if (isGuest || !contextUser) return undefined
+    return contextUser.user_metadata?.avatar_url
   }
 
   const [selectedCategory, setSelectedCategory] = useState("Tudo")
