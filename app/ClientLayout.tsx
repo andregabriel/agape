@@ -9,7 +9,7 @@ import SupabaseProvider from "@/components/providers/supabase-provider"
 
 // Initialize console capture for development environments only
 if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-  import("@/lib/dev/consoleCapture").then(({ initConsoleCapture }) => {
+  import("../src/lib/dev/consoleCapture").then(({ initConsoleCapture }) => {
     initConsoleCapture()
   })
 }
