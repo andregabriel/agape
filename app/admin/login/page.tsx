@@ -1,14 +1,11 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { loginAdminWithEmail, signInWithGoogleAdmin } from "@/app/auth/actions"
-import Image from "next/image"
+import { signInWithGoogle } from "@/app/auth/actions"
 
 const GoogleIcon = () => (
-  <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor">
+  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -19,60 +16,32 @@ const GoogleIcon = () => (
 
 export default function AdminLoginPage() {
   const searchParams = useSearchParams()
-  const error = searchParams.get("error")
+  const pathname = usePathname()
+  // O padrão é redirecionar para /admin após o login do admin
   const nextUrl = searchParams.get("next") || "/admin"
+  const error = searchParams.get("error")
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <div className="text-center">
-          <Image src="/images/agape-logo.png" alt="Agape Logo" width={280} height={70} className="mx-auto" priority />
-          <h2 className="mt-6 text-2xl font-bold text-gray-900">Acesso Administrativo</h2>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Login</h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Acesso exclusivo para administradores.</p>
         </div>
 
         {error && (
-          <div className="p-3 bg-red-100 text-red-700 border border-red-300 rounded-md text-center text-sm">
-            <p>{error}</p>
+          <div className="p-3 bg-red-500/20 text-red-500 border border-red-500 rounded-md text-center">
+            <p>Erro no login: {error}</p>
           </div>
         )}
 
-        <form className="space-y-6" action={loginAdminWithEmail}>
+        <form action={signInWithGoogle}>
+          {/* Este campo hidden diz para a ação de login para onde voltar */}
           <input type="hidden" name="next" value={nextUrl} />
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              defaultValue="andrepvgabriel@gmail.com"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
-            <Input id="password" name="password" type="password" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Entrar
-          </Button>
-        </form>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Ou continue com</span>
-          </div>
-        </div>
-
-        <form action={signInWithGoogleAdmin}>
-          <input type="hidden" name="next" value={nextUrl} />
-          <input type="hidden" name="originPath" value="/admin/login" />
-          <Button type="submit" variant="outline" className="w-full bg-transparent">
+          <input type="hidden" name="originPath" value={pathname} />
+          <Button type="submit" className="w-full bg-transparent" variant="outline">
             <GoogleIcon />
-            Google
+            Entrar com Google
           </Button>
         </form>
       </div>

@@ -1,8 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useSupabaseClient, useUser } from "@/components/providers/supabase-provider"
-import type { User } from "@supabase/supabase-js"
+import { useState } from "react"
 // Importando o novo HomeHeader que inclui avatar e filtros
 import HomeHeader from "@/components/home/home-header"
 import MainBanner from "@/components/home/main-banner"
@@ -610,27 +608,6 @@ const orderedCategories = [
 ]
 
 export default function NewHomePage() {
-  const contextUser = useUser()
-  const [isGuest, setIsGuest] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Check for guest status from sessionStorage
-    const guestStatus = sessionStorage.getItem("isGuest") === "true"
-    setIsGuest(guestStatus)
-    setLoading(false)
-  }, [])
-
-  const getUserNameInitial = () => {
-    if (isGuest || !contextUser) return "C" // Convidado
-    return contextUser.user_metadata?.full_name?.[0] || contextUser.email?.[0] || "A"
-  }
-
-  const getUserImageUrl = () => {
-    if (isGuest || !contextUser) return undefined
-    return contextUser.user_metadata?.avatar_url
-  }
-
   const [selectedCategory, setSelectedCategory] = useState("Tudo")
 
   // Filtrando seções com base na categoria selecionada
@@ -639,14 +616,6 @@ export default function NewHomePage() {
     (section) =>
       section.category === "NÃO_FILTRAR" || selectedCategory === "Tudo" || section.category === selectedCategory,
   )
-
-  if (loading) {
-    return (
-      <div className="bg-black text-white min-h-screen flex items-center justify-center">
-        <p>Carregando...</p>
-      </div>
-    )
-  }
 
   return (
     <div className="bg-black text-white min-h-screen">
@@ -657,9 +626,8 @@ export default function NewHomePage() {
         )} // Exclui categorias que não são filtros de conteúdo
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
-        isGuest={isGuest}
-        userNameInitial={getUserNameInitial()}
-        userImageUrl={getUserImageUrl()}
+        // userNameInitial="U" // Você pode passar a inicial do nome do usuário aqui
+        // userImageUrl="/path/to/user-image.jpg" // E o caminho da imagem se for dinâmico
       />
       <main className="pt-4">
         {" "}

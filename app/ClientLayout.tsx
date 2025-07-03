@@ -1,36 +1,29 @@
 "use client"
 
 import type React from "react"
+
 import { usePathname } from "next/navigation"
-import { Toaster } from "sonner"
 import BottomNav from "@/components/bottom-nav"
 import { PlayerProvider } from "@/components/player/player-provider"
-import SupabaseProvider from "@/components/providers/supabase-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/components/theme-provider"
 
-// Initialize console capture for development environments only
-if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-  import("../src/lib/dev/consoleCapture").then(({ initConsoleCapture }) => {
-    initConsoleCapture()
-  })
-}
-
-export default function ClientLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const showBottomNav = !["/login", "/admin/login", "/pre-player", "/playlist"].some((path) =>
-    pathname.startsWith(path),
-  )
+  const showBottomNav = !["/login", "/admin/login"].includes(pathname)
 
   return (
-    <SupabaseProvider>
-      <PlayerProvider>
-        <main className="flex-1">{children}</main>
-        {showBottomNav && <BottomNav />}
-        <Toaster />
-      </PlayerProvider>
-    </SupabaseProvider>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <main className="relative h-screen w-screen overflow-hidden bg-background font-sans text-foreground">
+            {children}
+          </main>
+          {showBottomNav && <BottomNav />}
+          <PlayerProvider />
+          <Toaster />
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }

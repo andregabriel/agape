@@ -99,7 +99,12 @@ const reflections: ReflectionItemProps[] = [
 export default function ProfilePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <ProfileHeader name={userData.name} fullName={userData.fullName} avatarUrl={userData.avatarUrl} />
+      <ProfileHeader
+        name={userData.name}
+        fullName={userData.fullName}
+        avatarUrl={userData.avatarUrl}
+        onSettingsClick={() => console.log("Settings clicked")}
+      />
       <main className="flex-grow overflow-y-auto pb-20 space-y-6">
         <StreakSection
           count={streakData.count}

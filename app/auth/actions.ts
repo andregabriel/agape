@@ -1,167 +1,55 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
-export async function signInWithGoogle() {
-  const supabase = createClient()
-  const origin = process.env.NEXT_PUBLIC_SITE_URL
+export async function signInWithGoogle(formData: FormData) {
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
 
-  if (!origin) {
-    return redirect("/login?message=Configuration error: Site URL not set.")
-  }
+  const next = (formData.get("next") as string) || "/home"
+  const originPath = (formData.get("originPath") as string) || "/"
+
+  // Armazena o 'next' path em um cookie seguro
+  cookieStore.set("next_url", next, {
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  })
+
+  const origin =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
+
+  // A URL de redirecionamento deve ser exatamente a que está configurada no provedor OAuth
+  const redirectTo = `${origin}/auth/callback`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${origin}/auth/callback`,
+      redirectTo: redirectTo,
     },
   })
 
   if (error) {
     console.error("Error signing in with Google:", error)
-    return redirect("/login?message=Could not authenticate with Google")
+    return redirect(`${originPath}?error=${encodeURIComponent(error.message)}`)
   }
 
-  return redirect(data.url)
+  if (data.url) {
+    return redirect(data.url)
+  }
+
+  return redirect(`${originPath}?error=Could not authenticate with Google`)
 }
 
-export async function signInWithGoogleAdmin() {
-  const supabase = createClient()
-  const origin = process.env.NEXT_PUBLIC_SITE_URL
-
-  if (!origin) {
-    return redirect("/admin/login?message=Configuration error: Site URL not set.")
-  }
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${origin}/auth/callback?type=admin`,
-    },
-  })
-
-  if (error) {
-    console.error("Error signing in with Google:", error)
-    return redirect("/admin/login?message=Could not authenticate with Google")
-  }
-
-  return redirect(data.url)
-}
-
-export async function signInWithApple() {
-  const supabase = createClient()
-  const origin = process.env.NEXT_PUBLIC_SITE_URL
-
-  if (!origin) {
-    return redirect("/login?message=Configuration error: Site URL not set.")
-  }
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "apple",
-    options: {
-      redirectTo: `${origin}/auth/callback`,
-    },
-  })
-
-  if (error) {
-    console.error("Error signing in with Apple:", error)
-    return redirect("/login?message=Could not authenticate with Apple")
-  }
-
-  return redirect(data.url)
-}
-
-export async function signUp(formData: FormData) {
-  const origin = process.env.NEXT_PUBLIC_SITE_URL
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const supabase = createClient()
-
-  if (!origin) {
-    return redirect("/login?message=Configuration error: Site URL not set.")
-  }
-
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${origin}/auth/confirm`,
-    },
-  })
-
-  if (error) {
-    return redirect(`/login?message=${error.message}`)
-  }
-
-  return redirect("/login?message=Check email to continue sign in process")
-}
-
-export async function signIn(formData: FormData) {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const supabase = createClient()
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
-
-  if (error) {
-    return redirect(`/login?message=${error.message}`)
-  }
-
-  return redirect("/home")
-}
-
-export async function signOut() {
-  const supabase = createClient()
+export async function signOutAction() {
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
   await supabase.auth.signOut()
-  return redirect("/login")
-}
-
-// Re-export helpers expected elsewhere  ────────────────────────────────────
-export async function loginWithEmail(formData: FormData) {
-  // Re-use the existing signIn (email/password)
-  return signIn(formData)
-}
-
-export async function signupWithEmail(formData: FormData) {
-  // Re-use the existing signUp (email/password)
-  return signUp(formData)
-}
-
-export async function checkUserExists(email: string): Promise<boolean> {
-  const supabase = createClient()
-  // Simple existence check against the auth users table
-  const { data, error } = await supabase.auth.admin.listUsers({
-    email,
-  })
-  if (error) {
-    console.error("Error checking user existence:", error)
-    return false
-  }
-  return (data?.users?.length ?? 0) > 0
-}
-
-export async function loginAdminWithEmail(formData: FormData) {
-  // Log in first
-  await signIn(formData)
-
-  // Verify the logged-in user has an `is_admin` claim or profile flag
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // You can adapt this check to your exact schema.
-  const isAdmin = user?.user_metadata?.is_admin || user?.role === "admin" // fallback if you store custom role
-
-  if (!isAdmin) {
-    // immediately sign out and redirect to normal login
-    await supabase.auth.signOut()
-    return redirect("/login?message=Você não possui permissões de administrador")
-  }
-
-  return redirect("/admin") // success path
+  revalidatePath("/", "layout")
+  redirect("/")
 }

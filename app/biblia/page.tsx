@@ -1,12 +1,14 @@
-"use client"
+"use client" // Adicionar no topo se ainda não estiver
 
-import { useState } from "react"
+import { useState } from "react" // Importar useState
 import BibleHeader from "@/components/bible/bible-header"
 import ChapterTitle from "@/components/bible/chapter-title"
 import VerseView from "@/components/bible/verse-view"
 import type { Verse } from "@/types/bible"
 
-// Placeholder data
+// Placeholder data para Gênesis 1
+const initialBook = "Gênesis"
+const initialChapter = 1
 const versesData: { [key: string]: { [key: number]: Verse[] } } = {
   Gênesis: {
     1: [
@@ -39,6 +41,7 @@ const versesData: { [key: string]: { [key: number]: Verse[] } } = {
       { number: 2, text: "Rúben, Simeão, Levi e Judá;" },
     ],
   },
+  // Adicionar mais livros e capítulos conforme necessário
 }
 
 const books = [
@@ -81,6 +84,7 @@ const books = [
   "Ageu",
   "Zacarias",
   "Malaquias",
+  // Novo Testamento
   "Mateus",
   "Marcos",
   "Lucas",
@@ -110,6 +114,7 @@ const books = [
   "Apocalipse",
 ]
 
+// Simulação de total de capítulos por livro
 const chaptersPerBook: { [key: string]: number } = {
   Gênesis: 50,
   Êxodo: 40,
@@ -123,6 +128,7 @@ const chaptersPerBook: { [key: string]: number } = {
   "II Samuel": 24,
   "I Reis": 22,
   "II Reis": 25,
+  // ... preencher para todos os livros
   Mateus: 28,
   Marcos: 16,
   Lucas: 24,
@@ -131,12 +137,12 @@ const chaptersPerBook: { [key: string]: number } = {
 }
 
 export default function BiblePage() {
-  const [currentBook, setCurrentBook] = useState("Gênesis")
-  const [currentChapter, setCurrentChapter] = useState(1)
+  const [currentBook, setCurrentBook] = useState(initialBook)
+  const [currentChapter, setCurrentChapter] = useState(initialChapter)
 
   const handleBookChange = (book: string) => {
     setCurrentBook(book)
-    setCurrentChapter(1)
+    setCurrentChapter(1) // Resetar para o capítulo 1 ao mudar de livro
   }
 
   const handleChapterChange = (chapter: number) => {
