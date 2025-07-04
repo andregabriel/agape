@@ -38,6 +38,10 @@ import {
   MoreHorizontal
 } from "lucide-react"
 
+import AutoGenerationManager from "@/components/admin/AutoGenerationManager"
+import ElevenLabsVoiceManager from "@/components/admin/ElevenLabsVoiceManager"
+import OpenAIContentGenerator from "@/components/admin/OpenAIContentGenerator"
+
 // Enhanced mock data
 const mockAudios = [
   { id: 1, title: "Terço Diário", category: "Oração", duration: "25:30", status: "published", order: 1, visible: true },
@@ -193,7 +197,7 @@ export default function AdminDashboard() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="audios" className="flex items-center gap-2">
               <Music className="w-4 h-4" />
               Áudios
@@ -223,6 +227,12 @@ export default function AdminDashboard() {
                 <path d="M12 2L13.09 6.26L18 5L16.74 10.74L22 12L16.74 13.26L18 19L13.09 17.74L12 22L10.91 17.74L6 19L7.26 13.26L2 12L7.26 10.74L6 5L10.91 6.26L12 2Z"/>
               </svg>
               Eleven Labs
+            </TabsTrigger>
+            <TabsTrigger value="auto-generation" className="flex items-center gap-2">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              Geração Auto
             </TabsTrigger>
             <TabsTrigger value="openai" className="flex items-center gap-2">
               <Bot className="w-4 h-4" />
@@ -650,384 +660,60 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Eleven Labs Voice Management */}
+          {/* Eleven Labs Tab */}
           <TabsContent value="elevenlabs" className="space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Gerenciar Vozes - Eleven Labs</CardTitle>
-                    <CardDescription>Configure vozes de IA para geração de áudio</CardDescription>
-                  </div>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Adicionar Voz
-                  </Button>
-                </div>
+                <CardTitle className="flex items-center gap-2">
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L13.09 6.26L18 5L16.74 10.74L22 12L16.74 13.26L18 19L13.09 17.74L12 22L10.91 17.74L6 19L7.26 13.26L2 12L7.26 10.74L6 5L10.91 6.26L12 2Z"/>
+                  </svg>
+                  Eleven Labs - Gerenciamento de Vozes
+                </CardTitle>
+                <CardDescription>
+                  Gerencie vozes da ElevenLabs para geração de áudios
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  {/* Voice Categories */}
-                  <div className="flex space-x-4">
-                    <Button variant="outline" className="flex items-center space-x-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <span>Padre ({mockVoices.filter(v => v.type === 'padre' && v.active).length})</span>
-                    </Button>
-                    <Button variant="outline" className="flex items-center space-x-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span>Storytelling ({mockVoices.filter(v => v.type === 'storytelling' && v.active).length})</span>
-                    </Button>
-                  </div>
-
-                  {/* Voice List */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {mockVoices.map((voice) => (
-                      <Card key={voice.id} className={`relative ${!voice.active ? 'opacity-60' : ''}`}>
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-start mb-3">
-                            <div className="flex items-center space-x-3">
-                              <div className={`w-3 h-3 rounded-full ${voice.type === 'padre' ? 'bg-blue-500' : 'bg-green-500'}`}></div>
-                              <div>
-                                <h3 className="font-medium flex items-center">
-                                  {voice.name}
-                                  {voice.isDefault && (
-                                                                         <Badge variant="secondary" className="ml-2 text-xs">
-                                       Padrão
-                                     </Badge>
-                                  )}
-                                </h3>
-                                <p className="text-sm text-gray-500 capitalize">{voice.type} • {voice.gender === 'male' ? 'Masculina' : 'Feminina'}</p>
-                              </div>
-                            </div>
-                            <div className="flex space-x-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleToggleVisibility(voice.id, 'voz')}
-                              >
-                                {voice.active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Copy className="w-4 h-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-3">{voice.description}</p>
-                          <div className="flex items-center justify-between">
-                            <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                              <Play className="w-3 h-3" />
-                              <span>Testar Voz</span>
-                            </Button>
-                            {voice.isDefault && (
-                              <Badge className="bg-blue-500 text-white">
-                                Voz Principal
-                              </Badge>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-
-                  {/* Eleven Labs Settings */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Configurações Eleven Labs</CardTitle>
-                      <CardDescription>Configure parâmetros globais para geração de voz</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label>Qualidade de Voz</Label>
-                          <Select defaultValue="high">
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="low">Baixa (mais rápido)</SelectItem>
-                              <SelectItem value="medium">Média</SelectItem>
-                              <SelectItem value="high">Alta (melhor qualidade)</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label>Estabilidade</Label>
-                          <Select defaultValue="medium">
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="low">Baixa</SelectItem>
-                              <SelectItem value="medium">Média</SelectItem>
-                              <SelectItem value="high">Alta</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label>Clareza</Label>
-                          <Select defaultValue="high">
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="low">Baixa</SelectItem>
-                              <SelectItem value="medium">Média</SelectItem>
-                              <SelectItem value="high">Alta</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-6 space-y-4">
-                        <div className="space-y-2">
-                          <Label>Texto de Teste</Label>
-                          <Textarea 
-                            placeholder="Digite um texto para testar as vozes..."
-                            defaultValue="Ave Maria, cheia de graça, o Senhor é convosco."
-                            className="min-h-[80px]"
-                          />
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="space-y-2">
-                            <Label>Voz Selecionada para Teste</Label>
-                            <Select defaultValue="voice1">
-                              <SelectTrigger className="w-[200px]">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {mockVoices.filter(v => v.active).map((voice) => (
-                                  <SelectItem key={voice.id} value={voice.id}>
-                                    {voice.name} ({voice.type})
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          
-                          <div className="flex space-x-2">
-                            <Button variant="outline">
-                              <Play className="w-4 h-4 mr-2" />
-                              Gerar Teste
-                            </Button>
-                            <Button>
-                              <Save className="w-4 h-4 mr-2" />
-                              Salvar Configurações
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                <ElevenLabsVoiceManager />
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Enhanced OpenAI Integration */}
-          <TabsContent value="openai" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Individual Generation */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Geração Individual</CardTitle>
-                  <CardDescription>Crie conteúdo individual usando IA</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Tipo de Conteúdo</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="audio">Áudio</SelectItem>
-                        <SelectItem value="playlist">Playlist</SelectItem>
-                        <SelectItem value="category">Categoria</SelectItem>
-                        <SelectItem value="event">Evento/Banner</SelectItem>
-                        <SelectItem value="phrase">Frase</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Prompt/Descrição</Label>
-                    <Textarea 
-                      placeholder="Descreva o que você gostaria de gerar..."
-                      className="min-h-[100px]"
-                    />
-                  </div>
-
-                  <Button 
-                    className="w-full" 
-                    onClick={() => handleGenerateContent("item", 1)}
-                    disabled={isGenerating}
-                  >
-                    {isGenerating ? "Gerando..." : "Gerar Conteúdo"}
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Enhanced Bulk Generation */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Geração em Lote</CardTitle>
-                  <CardDescription>Crie múltiplos itens de uma só vez</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Tipo de Conteúdo</Label>
-                    <Select value={bulkType} onValueChange={setBulkType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="audios">Áudios</SelectItem>
-                        <SelectItem value="playlists">Playlists</SelectItem>
-                        <SelectItem value="categories">Categorias</SelectItem>
-                        <SelectItem value="events">Eventos/Banners</SelectItem>
-                        <SelectItem value="phrases">Frases</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Quantidade</Label>
-                    <Input 
-                      type="number" 
-                      min="1" 
-                      max="50" 
-                      value={bulkQuantity}
-                      onChange={(e) => setBulkQuantity(Number(e.target.value))}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Tema/Contexto</Label>
-                    <Textarea 
-                      placeholder="Ex: Novenas para santos brasileiros, Orações matinais, etc..."
-                      className="min-h-[80px]"
-                    />
-                  </div>
-
-                  <Button 
-                    className="w-full" 
-                    onClick={handleBulkGeneration}
-                    disabled={isGenerating || !bulkType}
-                  >
-                    {isGenerating ? "Gerando..." : `Gerar ${bulkQuantity} ${bulkType}`}
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Advanced Bulk Generation */}
+          {/* Auto Generation Tab */}
+          <TabsContent value="auto-generation" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Geração Avançada em Lote</CardTitle>
-                <CardDescription>Crie múltiplos tipos de conteúdo relacionados</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="space-y-2">
-                    <Label>Categorias</Label>
-                    <Input type="number" min="0" max="10" defaultValue="2" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Playlists por Categoria</Label>
-                    <Input type="number" min="0" max="5" defaultValue="1" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Áudios por Categoria</Label>
-                    <Input type="number" min="0" max="50" defaultValue="10" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Frases por Categoria</Label>
-                    <Input type="number" min="0" max="20" defaultValue="3" />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Tema Principal</Label>
-                  <Input placeholder="Ex: Santos do Brasil, Orações para Família, etc..." />
-                </div>
-
-                <Button 
-                  className="w-full" 
-                  onClick={() => handleGenerateContent("conjunto completo", 1)}
-                  disabled={isGenerating}
-                >
-                  {isGenerating ? "Gerando..." : "Gerar Conjunto Completo"}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* AI Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Configurações de IA</CardTitle>
-                <CardDescription>Configure parâmetros para geração de conteúdo</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                  Geração Automática de Áudios
+                </CardTitle>
+                <CardDescription>
+                  Gere automaticamente todos os áudios usando OpenAI + ElevenLabs
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label>Criatividade</Label>
-                    <Select defaultValue="medium">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low">Baixa</SelectItem>
-                        <SelectItem value="medium">Média</SelectItem>
-                        <SelectItem value="high">Alta</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <AutoGenerationManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                  <div className="space-y-2">
-                    <Label>Linguagem</Label>
-                    <Select defaultValue="spiritual">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="formal">Formal</SelectItem>
-                        <SelectItem value="casual">Casual</SelectItem>
-                        <SelectItem value="spiritual">Espiritual</SelectItem>
-                        <SelectItem value="traditional">Tradicional</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Duração Preferida</Label>
-                    <Select defaultValue="medium">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="short">Curta (1-5min)</SelectItem>
-                        <SelectItem value="medium">Média (5-15min)</SelectItem>
-                        <SelectItem value="long">Longa (15min+)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                <div className="mt-4 flex justify-end">
-                  <Button>
-                    <Save className="w-4 h-4 mr-2" />
-                    Salvar Configurações
-                  </Button>
-                </div>
+          {/* OpenAI Tab */}
+          <TabsContent value="openai" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bot className="w-6 h-6" />
+                  OpenAI - Geração de Conteúdo
+                </CardTitle>
+                <CardDescription>
+                  Gere conteúdo automaticamente usando inteligência artificial
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <OpenAIContentGenerator />
               </CardContent>
             </Card>
           </TabsContent>
