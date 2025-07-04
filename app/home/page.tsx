@@ -620,7 +620,7 @@ export default function NewHomePage() {
   )
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-black text-white min-h-screen overflow-y-auto">
       <HomeHeader
         categories={orderedCategories.filter(
           (cat) =>
@@ -643,14 +643,13 @@ export default function NewHomePage() {
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
       />
-      <main className="pt-4">
+      <main className="pt-4 pb-24">
         {" "}
-        {/* Adicionado padding no topo do main para não sobrepor o header fixo */}
+        {/* Adicionado padding no topo do main para não sobrepor o header fixo e padding bottom para BottomNav */}
         {filteredSections.map((section) => (
           <div key={section.id}>{section.component}</div>
         ))}
       </main>
-      <div className="h-24"></div> {/* Espaço para BottomNav */}
     </div>
   )
 }

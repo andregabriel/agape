@@ -23,7 +23,7 @@ export default function EntranceAnimation({ onComplete }: EntranceAnimationProps
   }, [onComplete])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-gray-50">
       <div
         className={`transition-all duration-1000 transform ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
