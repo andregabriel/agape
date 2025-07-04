@@ -78,6 +78,75 @@ const mockCarousels = [
   { id: 5, title: "Novo Testamento", type: "grid", category: "Novo Testamento", order: 5, visible: true, itemCount: 6 },
 ]
 
+const mockVoices = [
+  { 
+    id: "voice1", 
+    name: "Padre João", 
+    type: "padre", 
+    language: "pt-BR", 
+    gender: "male",
+    description: "Voz calma e contemplativa, ideal para orações e meditações",
+    sample: "/samples/padre-joao.mp3",
+    isDefault: true,
+    active: true
+  },
+  { 
+    id: "voice2", 
+    name: "Padre Miguel", 
+    type: "padre", 
+    language: "pt-BR", 
+    gender: "male",
+    description: "Voz profunda e solene, perfeita para novenas e liturgias",
+    sample: "/samples/padre-miguel.mp3",
+    isDefault: false,
+    active: true
+  },
+  { 
+    id: "voice3", 
+    name: "Clara Narrativa", 
+    type: "storytelling", 
+    language: "pt-BR", 
+    gender: "female",
+    description: "Voz expressiva e envolvente para histórias bíblicas",
+    sample: "/samples/clara-narrativa.mp3",
+    isDefault: false,
+    active: true
+  },
+  { 
+    id: "voice4", 
+    name: "Maria Contadora", 
+    type: "storytelling", 
+    language: "pt-BR", 
+    gender: "female",
+    description: "Voz suave e maternal, ideal para histórias infantis",
+    sample: "/samples/maria-contadora.mp3",
+    isDefault: false,
+    active: true
+  },
+  { 
+    id: "voice5", 
+    name: "Padre Antônio", 
+    type: "padre", 
+    language: "pt-BR", 
+    gender: "male",
+    description: "Voz tradicional e reverente para missas e bênçãos",
+    sample: "/samples/padre-antonio.mp3",
+    isDefault: false,
+    active: false
+  },
+  { 
+    id: "voice6", 
+    name: "José Narrador", 
+    type: "storytelling", 
+    language: "pt-BR", 
+    gender: "male",
+    description: "Voz marcante e dramática para parábolas e passagens bíblicas",
+    sample: "/samples/jose-narrador.mp3",
+    isDefault: false,
+    active: true
+  }
+]
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("audios")
   const [searchTerm, setSearchTerm] = useState("")
@@ -124,7 +193,7 @@ export default function AdminDashboard() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="audios" className="flex items-center gap-2">
               <Music className="w-4 h-4" />
               Áudios
@@ -148,6 +217,12 @@ export default function AdminDashboard() {
             <TabsTrigger value="phrases" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Frases
+            </TabsTrigger>
+            <TabsTrigger value="elevenlabs" className="flex items-center gap-2">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L13.09 6.26L18 5L16.74 10.74L22 12L16.74 13.26L18 19L13.09 17.74L12 22L10.91 17.74L6 19L7.26 13.26L2 12L7.26 10.74L6 5L10.91 6.26L12 2Z"/>
+              </svg>
+              Eleven Labs
             </TabsTrigger>
             <TabsTrigger value="openai" className="flex items-center gap-2">
               <Bot className="w-4 h-4" />
@@ -570,6 +645,188 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Eleven Labs Voice Management */}
+          <TabsContent value="elevenlabs" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Gerenciar Vozes - Eleven Labs</CardTitle>
+                    <CardDescription>Configure vozes de IA para geração de áudio</CardDescription>
+                  </div>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Adicionar Voz
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Voice Categories */}
+                  <div className="flex space-x-4">
+                    <Button variant="outline" className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span>Padre ({mockVoices.filter(v => v.type === 'padre' && v.active).length})</span>
+                    </Button>
+                    <Button variant="outline" className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span>Storytelling ({mockVoices.filter(v => v.type === 'storytelling' && v.active).length})</span>
+                    </Button>
+                  </div>
+
+                  {/* Voice List */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {mockVoices.map((voice) => (
+                      <Card key={voice.id} className={`relative ${!voice.active ? 'opacity-60' : ''}`}>
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <div className="flex items-center space-x-3">
+                              <div className={`w-3 h-3 rounded-full ${voice.type === 'padre' ? 'bg-blue-500' : 'bg-green-500'}`}></div>
+                              <div>
+                                <h3 className="font-medium flex items-center">
+                                  {voice.name}
+                                  {voice.isDefault && (
+                                                                         <Badge variant="secondary" className="ml-2 text-xs">
+                                       Padrão
+                                     </Badge>
+                                  )}
+                                </h3>
+                                <p className="text-sm text-gray-500 capitalize">{voice.type} • {voice.gender === 'male' ? 'Masculina' : 'Feminina'}</p>
+                              </div>
+                            </div>
+                            <div className="flex space-x-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleToggleVisibility(voice.id, 'voz')}
+                              >
+                                {voice.active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Copy className="w-4 h-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-3">{voice.description}</p>
+                          <div className="flex items-center justify-between">
+                            <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                              <Play className="w-3 h-3" />
+                              <span>Testar Voz</span>
+                            </Button>
+                            {voice.isDefault && (
+                              <Badge className="bg-blue-500 text-white">
+                                Voz Principal
+                              </Badge>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Eleven Labs Settings */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Configurações Eleven Labs</CardTitle>
+                      <CardDescription>Configure parâmetros globais para geração de voz</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label>Qualidade de Voz</Label>
+                          <Select defaultValue="high">
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="low">Baixa (mais rápido)</SelectItem>
+                              <SelectItem value="medium">Média</SelectItem>
+                              <SelectItem value="high">Alta (melhor qualidade)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Estabilidade</Label>
+                          <Select defaultValue="medium">
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="low">Baixa</SelectItem>
+                              <SelectItem value="medium">Média</SelectItem>
+                              <SelectItem value="high">Alta</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Clareza</Label>
+                          <Select defaultValue="high">
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="low">Baixa</SelectItem>
+                              <SelectItem value="medium">Média</SelectItem>
+                              <SelectItem value="high">Alta</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 space-y-4">
+                        <div className="space-y-2">
+                          <Label>Texto de Teste</Label>
+                          <Textarea 
+                            placeholder="Digite um texto para testar as vozes..."
+                            defaultValue="Ave Maria, cheia de graça, o Senhor é convosco."
+                            className="min-h-[80px]"
+                          />
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-2">
+                            <Label>Voz Selecionada para Teste</Label>
+                            <Select defaultValue="voice1">
+                              <SelectTrigger className="w-[200px]">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {mockVoices.filter(v => v.active).map((voice) => (
+                                  <SelectItem key={voice.id} value={voice.id}>
+                                    {voice.name} ({voice.type})
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="flex space-x-2">
+                            <Button variant="outline">
+                              <Play className="w-4 h-4 mr-2" />
+                              Gerar Teste
+                            </Button>
+                            <Button>
+                              <Save className="w-4 h-4 mr-2" />
+                              Salvar Configurações
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </CardContent>
             </Card>
