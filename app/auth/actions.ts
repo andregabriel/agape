@@ -46,6 +46,64 @@ export async function signInWithGoogle(formData: FormData) {
   return redirect(`${originPath}?error=Could not authenticate with Google`)
 }
 
+export async function signInWithEmail(formData: FormData) {
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
+  
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+  const next = (formData.get("next") as string) || "/home"
+  const originPath = (formData.get("originPath") as string) || "/"
+
+  if (!email || !password) {
+    return redirect(`${originPath}?error=Email and password are required`)
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (error) {
+    console.error("Error signing in with email:", error)
+    return redirect(`${originPath}?error=${encodeURIComponent(error.message)}`)
+  }
+
+  revalidatePath("/", "layout")
+  redirect(next)
+}
+
+export async function signUpWithEmail(formData: FormData) {
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
+  
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+  const confirmPassword = formData.get("confirmPassword") as string
+  const next = (formData.get("next") as string) || "/home"
+  const originPath = (formData.get("originPath") as string) || "/"
+
+  if (!email || !password || !confirmPassword) {
+    return redirect(`${originPath}?error=All fields are required`)
+  }
+
+  if (password !== confirmPassword) {
+    return redirect(`${originPath}?error=Passwords do not match`)
+  }
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+  })
+
+  if (error) {
+    console.error("Error signing up with email:", error)
+    return redirect(`${originPath}?error=${encodeURIComponent(error.message)}`)
+  }
+
+  return redirect(`${originPath}?message=Check your email to confirm your account`)
+}
+
 export async function signOutAction() {
   const cookieStore = cookies()
   const supabase = createClient(cookieStore)

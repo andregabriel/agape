@@ -8,6 +8,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { X, Mail, User, Loader2 } from "lucide-react"
 import { signInWithGoogle } from "@/app/auth/actions"
 import { getSupabaseBrowserClient } from "@/lib/supabase/client"
+import EntranceAnimation from "@/components/entrance-animation"
+import EmailLoginModal from "@/components/email-login-modal"
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor">
@@ -30,6 +32,8 @@ export default function LoginPage() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const [isGuestLoading, setIsGuestLoading] = useState(false)
+  const [showEntranceAnimation, setShowEntranceAnimation] = useState(true)
+  const [showEmailModal, setShowEmailModal] = useState(false)
 
   const supabase = getSupabaseBrowserClient()
 
@@ -48,6 +52,10 @@ export default function LoginPage() {
 
   const nextUrl = searchParams.get("next") || "/home"
   const error = searchParams.get("error") // Fixed variable name
+
+  if (showEntranceAnimation) {
+    return <EntranceAnimation onComplete={() => setShowEntranceAnimation(false)} />
+  }
 
   return (
     <div className="flex flex-col h-screen bg-white text-gray-800 relative">
@@ -100,7 +108,7 @@ export default function LoginPage() {
           <Button
             variant="secondary"
             className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent py-6 rounded-xl text-base font-medium flex items-center justify-start px-6"
-            onClick={() => console.log("Login com E-mail (ainda não implementado)")}
+            onClick={() => setShowEmailModal(true)}
           >
             <Mail className="w-5 h-5 mr-3" />
             Continue com E-mail
@@ -125,6 +133,13 @@ export default function LoginPage() {
           .
         </p>
       </footer>
+
+      <EmailLoginModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        nextUrl={nextUrl}
+        originPath={pathname}
+      />
     </div>
   )
 }

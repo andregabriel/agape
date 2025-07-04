@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import DiscoverHeader from "@/components/discover/discover-header"
 import FeaturedBanner from "@/components/discover/featured-banner"
 // import CategoryScrollSection from "@/components/discover/category-scroll-section"; // Não mais usado aqui
@@ -63,13 +66,30 @@ const recommendedCategoriesData = [
 ]
 
 export default function DiscoverPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+
+  // Filter categories based on search query
+  const filteredCategories = searchQuery
+    ? recommendedCategoriesData.filter((category) =>
+        category.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : recommendedCategoriesData
+
   return (
     <div className="bg-background min-h-screen">
-      <DiscoverHeader />
+      <DiscoverHeader onSearch={setSearchQuery} searchQuery={searchQuery} />
       <div className="p-4 space-y-8">
-        <FeaturedBanner item={featuredBannerData} />
+        {!searchQuery && <FeaturedBanner item={featuredBannerData} />}
         {/* Usando o novo VerticalCategoryGrid aqui */}
-        <VerticalCategoryGrid title="Categorias Recomendadas" items={recommendedCategoriesData} />
+        <VerticalCategoryGrid 
+          title={searchQuery ? `Resultados para "${searchQuery}"` : "Categorias Recomendadas"} 
+          items={filteredCategories} 
+        />
+        {filteredCategories.length === 0 && searchQuery && (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Nenhuma categoria encontrada para "{searchQuery}"</p>
+          </div>
+        )}
         {/* Adicionar mais seções aqui conforme as imagens completas da tela Descobrir */}
       </div>
     </div>

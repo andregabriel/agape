@@ -16,9 +16,9 @@ export default function VerticalCategoryGrid({ title, items }: VerticalCategoryG
   return (
     <section>
       <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">{title}</h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         {" "}
-        {/* Define 2 colunas e um espaçamento entre os cards */}
+        {/* Define 3 colunas e um espaçamento entre os cards */}
         {items.map((item) => (
           <CategoryCard key={item.id} item={item} />
         ))}

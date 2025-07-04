@@ -3,6 +3,7 @@
 import { useState } from "react"
 // Importando o novo HomeHeader que inclui avatar e filtros
 import HomeHeader from "@/components/home/home-header"
+import HamburgerMenu from "@/components/home/hamburger-menu"
 import MainBanner from "@/components/home/main-banner"
 import QuickAccessIcons from "@/components/home/quick-access-icons"
 import ChallengeBanner from "@/components/home/challenge-banner"
@@ -609,6 +610,7 @@ const orderedCategories = [
 
 export default function NewHomePage() {
   const [selectedCategory, setSelectedCategory] = useState("Tudo")
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   // Filtrando seções com base na categoria selecionada
   // Seções marcadas com "NÃO_FILTRAR" ou se "Tudo" está selecionado, são sempre incluídas.
@@ -626,8 +628,20 @@ export default function NewHomePage() {
         )} // Exclui categorias que não são filtros de conteúdo
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
+        onMenuToggle={() => setIsMenuOpen(true)}
         // userNameInitial="U" // Você pode passar a inicial do nome do usuário aqui
         // userImageUrl="/path/to/user-image.jpg" // E o caminho da imagem se for dinâmico
+      />
+      
+      <HamburgerMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        categories={orderedCategories.filter(
+          (cat) =>
+            !["Sagrado Coração de Jesus", "Frase", "Contra o vício", "Termine de Rezar", "Magisterium"].includes(cat),
+        )}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
       />
       <main className="pt-4">
         {" "}

@@ -1,8 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { useSearchParams, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Mail } from "lucide-react"
 import { signInWithGoogle } from "@/app/auth/actions"
+import EmailLoginModal from "@/components/email-login-modal"
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
@@ -17,6 +20,7 @@ const GoogleIcon = () => (
 export default function AdminLoginPage() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
+  const [showEmailModal, setShowEmailModal] = useState(false)
   // O padrão é redirecionar para /admin após o login do admin
   const nextUrl = searchParams.get("next") || "/admin"
   const error = searchParams.get("error")
@@ -35,16 +39,34 @@ export default function AdminLoginPage() {
           </div>
         )}
 
-        <form action={signInWithGoogle}>
-          {/* Este campo hidden diz para a ação de login para onde voltar */}
-          <input type="hidden" name="next" value={nextUrl} />
-          <input type="hidden" name="originPath" value={pathname} />
-          <Button type="submit" className="w-full bg-transparent" variant="outline">
-            <GoogleIcon />
-            Entrar com Google
+        <div className="space-y-3">
+          <form action={signInWithGoogle}>
+            {/* Este campo hidden diz para a ação de login para onde voltar */}
+            <input type="hidden" name="next" value={nextUrl} />
+            <input type="hidden" name="originPath" value={pathname} />
+            <Button type="submit" className="w-full bg-transparent" variant="outline">
+              <GoogleIcon />
+              Entrar com Google
+            </Button>
+          </form>
+          
+          <Button
+            onClick={() => setShowEmailModal(true)}
+            className="w-full bg-transparent"
+            variant="outline"
+          >
+            <Mail className="w-4 h-4 mr-2" />
+            Continue com E-mail
           </Button>
-        </form>
+        </div>
       </div>
+      
+      <EmailLoginModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        nextUrl={nextUrl}
+        originPath={pathname}
+      />
     </div>
   )
 }
