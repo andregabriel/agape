@@ -22,7 +22,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <html lang="pt-BR" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <main className="relative h-screen w-screen overflow-hidden bg-background font-sans text-foreground">
+          <main className="relative min-h-screen w-screen bg-background font-sans text-foreground">
             {children}
           </main>
           {showBottomNav && <BottomNav />}
