@@ -2,24 +2,27 @@ import { createBrowserClient } from "@supabase/ssr"
 import type { Database } from "@/types/supabase"
 import type { SupabaseClient } from "@supabase/supabase-js"
 
-// Variável para armazenar a instância do cliente (Singleton)
+// Declare a module-level variable to hold the client instance.
 let client: SupabaseClient<Database> | undefined
 
 /**
- * Retorna uma instância singleton do Supabase client para o navegador.
- * Evita a criação de múltiplas instâncias e o aviso "Multiple GoTrueClient instances".
+ * Gets a Supabase client for use in the browser.
+ * Implements a singleton pattern to ensure only one client is created.
  */
 export function getSupabaseBrowserClient() {
-  if (client === undefined) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error("Missing Supabase URL or Anon Key in client environment")
-    }
-
-    client = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey)
+  // If the client has already been created, return it.
+  if (client) {
+    return client
   }
+
+  // If no client exists, create a new one.
+  // This structure ensures createBrowserClient is only called once.
+  client = createBrowserClient<Database>(
+    // Using the hardcoded keys as per your last instruction.
+    // IMPORTANT: Move these to environment variables for production.
+    "https://llomihbcknpzndlabmmt.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsb21paGJja25wem5kbGFibW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNTc1MzQsImV4cCI6MjA2NTgzMzUzNH0.lP6F0JwQZ-n6Y2w67MLCdTPcUaiVw-ddloryJrlbq7U",
+  )
 
   return client
 }
