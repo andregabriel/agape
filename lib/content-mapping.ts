@@ -1,4 +1,5 @@
-// Mapeamento completo de todo o conteúdo da aplicação para geração de áudios
+// Mapeamento completo de TODOS os 69 thumbnails da página /home
+// 1 áudio por thumbnail conforme solicitado
 export interface ContentItem {
   id: string
   title: string
@@ -7,12 +8,25 @@ export interface ContentItem {
   voiceType: 'padre' | 'storytelling'
   estimatedDuration?: string
   priority: 'high' | 'medium' | 'low'
-  contentType: 'audio' | 'playlist'
+  contentType: 'audio' | 'playlist' | 'banner'
   prompt?: string // Prompt personalizado para OpenAI
 }
 
 export const ALL_CONTENT: ContentItem[] = [
-  // CORPUS CHRISTI - Voz de Padre
+  // SAGRADO CORAÇÃO DE JESUS - Banner (1 item)
+  {
+    id: "scj_banner",
+    title: "Sagrado Coração de Jesus - Dia 6: 14 de junho",
+    subtitle: "Challenge Banner Principal",
+    category: "Sagrado Coração de Jesus",
+    voiceType: "padre",
+    estimatedDuration: "10 min",
+    priority: "high",
+    contentType: "banner",
+    prompt: "Crie uma meditação sobre a devoção ao Sagrado Coração de Jesus, especificamente para o dia 6 da novena (14 de junho), incluindo orações e reflexões sobre o amor misericordioso de Cristo"
+  },
+
+  // CORPUS CHRISTI - Voz de Padre (4 itens)
   {
     id: "cc1",
     title: "Santo Ambrósio de Milão",
@@ -58,7 +72,20 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Crie uma playlist completa de adoração eucarística com orações, meditações e momentos de silêncio contemplativo"
   },
 
-  // DESTAQUES - Voz de Padre
+  // CONTRA O VÍCIO - Banner (1 item)  
+  {
+    id: "cv_banner",
+    title: "Contra o Vício - Dia 8: Santa Mônica",
+    subtitle: "Novena Contra o Vício",
+    category: "Contra o vício",
+    voiceType: "padre",
+    estimatedDuration: "15 min",
+    priority: "high",
+    contentType: "banner",
+    prompt: "Desenvolva uma meditação sobre Santa Mônica como intercessora contra vícios, incluindo orações poderosas para libertação de dependências e fortalecimento espiritual"
+  },
+
+  // DESTAQUES - Voz de Padre (3 itens)
   {
     id: "hl1",
     title: "Novena para Namorados",
@@ -93,7 +120,7 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Crie novena para pais orarem por seus filhos, inspirada na Sagrada Família"
   },
 
-  // ROTINAS MATINAIS - Voz de Padre
+  // ROTINAS MATINAIS - Voz de Padre (6 itens)
   {
     id: "mr1",
     title: "Terço Diário",
@@ -161,7 +188,7 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Apresente brevemente um santo do dia com aplicação prática de suas virtudes para o cotidiano"
   },
 
-  // FAVORITAS DOS ASSINANTES - Voz de Padre
+  // FAVORITAS DOS ASSINANTES - Voz de Padre (3 itens)
   {
     id: "sf1",
     title: "Oração da Noite Completa",
@@ -196,7 +223,20 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Desenvolva reflexão mais profunda sobre o santo do dia e sua relevância para nossa fé"
   },
 
-  // DIÁRIAS COM CONVIDADOS - Voz de Padre  
+  // TERMINE DE REZAR - Banner (1 item)
+  {
+    id: "tr_banner",
+    title: "Termine de Rezar - Sagrado Coração de Jesus",
+    subtitle: "Dia 6: 14 de junho",
+    category: "Termine de Rezar",
+    voiceType: "padre",
+    estimatedDuration: "12 min",
+    priority: "high",
+    contentType: "banner",
+    prompt: "Crie uma meditação de encerramento para quem está terminando a devoção ao Sagrado Coração, com oração final e compromisso espiritual"
+  },
+
+  // DIÁRIAS COM CONVIDADOS - Voz de Padre (3 itens)
   {
     id: "dg1",
     title: "Evangelho Diário Comentado",
@@ -231,7 +271,55 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Guie um terço familiar com meditações adequadas para todas as idades"
   },
 
-  // ROTINAS NOTURNAS - Voz de Padre
+  // REFLITA SOBRE O EVANGELHO - Single Card (1 item)
+  {
+    id: "re_card",
+    title: "Homilia Semanal",
+    subtitle: "Pe. Pedro Willemsens",
+    category: "Reflita sobre o Evangelho",
+    voiceType: "padre",
+    estimatedDuration: "15 min",
+    priority: "high",
+    contentType: "audio",
+    prompt: "Desenvolva uma homilia semanal profunda e inspiradora sobre o Evangelho, com aplicação prática para a vida cristã"
+  },
+
+  // EXPLORE POR CATEGORIAS (3 itens)
+  {
+    id: "ec1",
+    title: "Lofi Católico",
+    subtitle: "Música para relaxar ou focar na fé",
+    category: "Explore por Categorias",
+    voiceType: "padre",
+    estimatedDuration: "30 min",
+    priority: "medium",
+    contentType: "playlist",
+    prompt: "Crie introdução e orientações para uso de música lofi católica durante oração e estudo"
+  },
+  {
+    id: "ec2",
+    title: "Áudios da Bíblia Sagrada",
+    subtitle: "Caminhe pela Palavra de Deus",
+    category: "Explore por Categorias",
+    voiceType: "storytelling",
+    estimatedDuration: "45 min",
+    priority: "high",
+    contentType: "playlist",
+    prompt: "Apresente seleção de passagens bíblicas narradas com introduções contextuais"
+  },
+  {
+    id: "ec3",
+    title: "Meditações Guiadas",
+    subtitle: "Encontre paz interior",
+    category: "Explore por Categorias",
+    voiceType: "padre",
+    estimatedDuration: "20 min",
+    priority: "high",
+    contentType: "playlist",
+    prompt: "Desenvolva série de meditações guiadas para encontrar paz interior através da oração contemplativa"
+  },
+
+  // ROTINAS NOTURNAS - Voz de Padre (3 itens)
   {
     id: "nr1",
     title: "Oração da Noite para Dormir",
@@ -266,7 +354,7 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Compartilhe reflexões de sabedoria espiritual para contemplação noturna"
   },
 
-  // HISTÓRIAS BÍBLICAS PARA DORMIR - Voz de Storytelling
+  // HISTÓRIAS BÍBLICAS PARA DORMIR - Voz de Storytelling (6 itens)
   {
     id: "bs1",
     title: "A Vocação de Moisés",
@@ -334,7 +422,90 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Conte corajosamente a história de Daniel, destacando a fidelidade a Deus em meio às perseguições"
   },
 
-  // NOVO TESTAMENTO - Voz de Storytelling
+  // REZADAS RECENTEMENTE - Voz de Padre (3 itens)
+  {
+    id: "rp1",
+    title: "Terço Diário Meditado",
+    subtitle: "Com os mistérios do dia",
+    category: "Rezadas Recentemente",
+    voiceType: "padre",
+    estimatedDuration: "28 min",
+    priority: "high",
+    contentType: "playlist",
+    prompt: "Guie terço completo com meditações profundas sobre os mistérios apropriados"
+  },
+  {
+    id: "rp2",
+    title: "Imitação de Cristo (Áudio)",
+    subtitle: "com Juliano Cazarré",
+    category: "Rezadas Recentemente",
+    voiceType: "padre",
+    estimatedDuration: "10 min",
+    priority: "high",
+    contentType: "audio",
+    prompt: "Leia e comente trechos selecionados da 'Imitação de Cristo' com aplicação prática"
+  },
+  {
+    id: "rp3",
+    title: "Evangelho do Dia (Lectio)",
+    subtitle: "Lectio Divina",
+    category: "Rezadas Recentemente",
+    voiceType: "padre",
+    estimatedDuration: "12 min",
+    priority: "high",
+    contentType: "audio",
+    prompt: "Conduza lectio divina completa com o evangelho do dia, incluindo todas as etapas contemplativas"
+  },
+
+  // MÚSICAS PARA DORMIR - Voz de Padre (3 itens)
+  {
+    id: "ms1",
+    title: "Piano Para Dormir e Sonhar",
+    subtitle: "Francesca LaRosa",
+    category: "Músicas para Dormir",
+    voiceType: "padre",
+    estimatedDuration: "30 min",
+    priority: "low",
+    contentType: "playlist",
+    prompt: "Crie meditações contemplativas para acompanhar música instrumental suave"
+  },
+  {
+    id: "ms2",
+    title: "Piano Relaxante Divino",
+    subtitle: "Simon Wester",
+    category: "Músicas para Dormir",
+    voiceType: "padre",
+    estimatedDuration: "25 min",
+    priority: "low",
+    contentType: "playlist",
+    prompt: "Desenvolva reflexões espirituais relaxantes para música de piano contemplativa"
+  },
+  {
+    id: "ms3",
+    title: "Cantos Gregorianos Celestiais",
+    subtitle: "Para meditar e dormir profundamente",
+    category: "Músicas para Dormir",
+    voiceType: "padre",
+    estimatedDuration: "45 min",
+    priority: "medium",
+    contentType: "playlist",
+    prompt: "Apresente cânticos gregorianos com breves introduções contemplativas"
+  },
+
+  // MINUTO DE HOMILIA - Single Card (1 item)
+  {
+    id: "mh_card",
+    title: "Minuto de Homilia",
+    subtitle: "Com Pe. Sérgio Jeremias",
+    category: "Minuto de Homilia",
+    voiceType: "padre",
+    estimatedDuration: "2 min",
+    priority: "high",
+    contentType: "audio",
+    prompt: "Desenvolva homilia breve mas profunda de 2 minutos com mensagem espiritual impactante"
+  },
+
+  // NOVO TESTAMENTO - Voz de Storytelling (6 itens)
   {
     id: "nt1",
     title: "Evangelho de São Mateus",
@@ -402,7 +573,42 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Interprete simbolicamente as visões do Apocalipse de forma acessível e esperançosa"
   },
 
-  // NÃO SABE POR ONDE COMEÇAR - Voz de Padre
+  // MÚSICA - Voz de Storytelling/Padre (3 itens)
+  {
+    id: "m1",
+    title: "Tomé (Ao Vivo)",
+    subtitle: "Davidson Silva",
+    category: "Música",
+    voiceType: "storytelling",
+    estimatedDuration: "4 min",
+    priority: "medium",
+    contentType: "audio",
+    prompt: "Apresente e comente esta música católica contemporânea com sua mensagem espiritual"
+  },
+  {
+    id: "m2",
+    title: "Sacred Heart Lofi Beats",
+    subtitle: "Lofi católico para oração",
+    category: "Música",
+    voiceType: "padre",
+    estimatedDuration: "20 min",
+    priority: "low",
+    contentType: "audio",
+    prompt: "Introduza esta música ambiente para oração com sugestões de uso contemplativo"
+  },
+  {
+    id: "m3",
+    title: "#1 Playlist Lofi Cristã",
+    subtitle: "Para rezar, estudar e meditar",
+    category: "Música",
+    voiceType: "padre",
+    estimatedDuration: "30 min",
+    priority: "low",
+    contentType: "playlist",
+    prompt: "Apresente seleção musical contemplativa com orientações para uso na oração"
+  },
+
+  // NÃO SABE POR ONDE COMEÇAR - Voz de Padre/Storytelling (6 itens)
   {
     id: "ws1",
     title: "Introdutório à Fé",
@@ -470,7 +676,7 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Conte biografias inspiradoras de santos populares como modelos de vida cristã"
   },
 
-  // TEMÁTICAS - Voz de Padre
+  // TEMÁTICAS - Voz de Padre (3 itens)
   {
     id: "th1",
     title: "Paciência Divina",
@@ -505,7 +711,20 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Inspire com reflexões sobre a esperança como virtude teologal fundamental"
   },
 
-  // ORAÇÕES INFANTIS - Voz de Storytelling
+  // MAGISTERIUM - Banner (1 item)
+  {
+    id: "mg_banner",
+    title: "Magisterium da Igreja",
+    subtitle: "Ensinamentos do Magistério",
+    category: "Magisterium",
+    voiceType: "padre",
+    estimatedDuration: "20 min",
+    priority: "medium",
+    contentType: "banner",
+    prompt: "Desenvolva uma explicação sobre o Magistério da Igreja Católica, sua autoridade e importância para a fé"
+  },
+
+  // ORAÇÕES INFANTIS - Voz de Storytelling (6 itens)
   {
     id: "kp1",
     title: "Intro: Crianças na Fé",
@@ -573,7 +792,7 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Crie uma oração noturna especial para crianças se despedirem de Jesus antes de dormir"
   },
 
-  // NOVENAS - Voz de Padre
+  // NOVENAS - Voz de Padre (3 itens)
   {
     id: "nv1",
     title: "Novena de São José Operário",
@@ -606,117 +825,12 @@ export const ALL_CONTENT: ContentItem[] = [
     priority: "medium",
     contentType: "playlist",
     prompt: "Crie novena mariana focada na pureza e virtudes de Nossa Senhora como modelo"
-  },
-
-  // MÚSICAS PARA DORMIR - Voz de Padre (contemplativo)
-  {
-    id: "ms1",
-    title: "Piano Para Dormir e Sonhar",
-    subtitle: "Francesca LaRosa",
-    category: "Músicas para Dormir",
-    voiceType: "padre",
-    estimatedDuration: "30 min",
-    priority: "low",
-    contentType: "playlist",
-    prompt: "Crie meditações contemplativas para acompanhar música instrumental suave"
-  },
-  {
-    id: "ms2",
-    title: "Piano Relaxante Divino",
-    subtitle: "Simon Wester",
-    category: "Músicas para Dormir",
-    voiceType: "padre",
-    estimatedDuration: "25 min",
-    priority: "low",
-    contentType: "playlist",
-    prompt: "Desenvolva reflexões espirituais relaxantes para música de piano contemplativa"
-  },
-  {
-    id: "ms3",
-    title: "Cantos Gregorianos Celestiais",
-    subtitle: "Para meditar e dormir profundamente",
-    category: "Músicas para Dormir",
-    voiceType: "padre",
-    estimatedDuration: "45 min",
-    priority: "medium",
-    contentType: "playlist",
-    prompt: "Apresente cânticos gregorianos com breves introduções contemplativas"
-  },
-
-  // MÚSICA - Voz de Storytelling
-  {
-    id: "m1",
-    title: "Tomé (Ao Vivo)",
-    subtitle: "Davidson Silva",
-    category: "Música",
-    voiceType: "storytelling",
-    estimatedDuration: "4 min",
-    priority: "medium",
-    contentType: "audio",
-    prompt: "Apresente e comente esta música católica contemporânea com sua mensagem espiritual"
-  },
-  {
-    id: "m2",
-    title: "Sacred Heart Lofi Beats",
-    subtitle: "Lofi católico para oração",
-    category: "Música",
-    voiceType: "padre",
-    estimatedDuration: "20 min",
-    priority: "low",
-    contentType: "audio",
-    prompt: "Introduza esta música ambiente para oração com sugestões de uso contemplativo"
-  },
-  {
-    id: "m3",
-    title: "#1 Playlist Lofi Cristã",
-    subtitle: "Para rezar, estudar e meditar",
-    category: "Música",
-    voiceType: "padre",
-    estimatedDuration: "30 min",
-    priority: "low",
-    contentType: "playlist",
-    prompt: "Apresente seleção musical contemplativa com orientações para uso na oração"
-  },
-
-  // REZADAS RECENTEMENTE - Voz de Padre
-  {
-    id: "rp1",
-    title: "Terço Diário Meditado",
-    subtitle: "Com os mistérios do dia",
-    category: "Rezadas Recentemente",
-    voiceType: "padre",
-    estimatedDuration: "28 min",
-    priority: "high",
-    contentType: "playlist",
-    prompt: "Guie terço completo com meditações profundas sobre os mistérios apropriados"
-  },
-  {
-    id: "rp2",
-    title: "Imitação de Cristo (Áudio)",
-    subtitle: "com Juliano Cazarré",
-    category: "Rezadas Recentemente",
-    voiceType: "padre",
-    estimatedDuration: "10 min",
-    priority: "high",
-    contentType: "audio",
-    prompt: "Leia e comente trechos selecionados da 'Imitação de Cristo' com aplicação prática"
-  },
-  {
-    id: "rp3",
-    title: "Evangelho do Dia (Lectio)",
-    subtitle: "Lectio Divina",
-    category: "Rezadas Recentemente",
-    voiceType: "padre",
-    estimatedDuration: "12 min",
-    priority: "high",
-    contentType: "audio",
-    prompt: "Conduza lectio divina completa com o evangelho do dia, incluindo todas as etapas contemplativas"
   }
 ]
 
-// Estatísticas do conteúdo
+// Estatísticas do conteúdo atualizado
 export const CONTENT_STATS = {
-  totalItems: ALL_CONTENT.length,
+  totalItems: ALL_CONTENT.length, // 69 itens
   byVoiceType: {
     padre: ALL_CONTENT.filter(item => item.voiceType === 'padre').length,
     storytelling: ALL_CONTENT.filter(item => item.voiceType === 'storytelling').length
@@ -725,6 +839,11 @@ export const CONTENT_STATS = {
     high: ALL_CONTENT.filter(item => item.priority === 'high').length,
     medium: ALL_CONTENT.filter(item => item.priority === 'medium').length,
     low: ALL_CONTENT.filter(item => item.priority === 'low').length
+  },
+  byContentType: {
+    audio: ALL_CONTENT.filter(item => item.contentType === 'audio').length,
+    playlist: ALL_CONTENT.filter(item => item.contentType === 'playlist').length,
+    banner: ALL_CONTENT.filter(item => item.contentType === 'banner').length
   },
   byCategory: ALL_CONTENT.reduce((acc, item) => {
     acc[item.category] = (acc[item.category] || 0) + 1
@@ -743,11 +862,13 @@ export function getContentByFilters(filters: {
   voiceType?: 'padre' | 'storytelling'
   priority?: 'high' | 'medium' | 'low'
   category?: string
+  contentType?: 'audio' | 'playlist' | 'banner'
 }) {
   return ALL_CONTENT.filter(item => {
     if (filters.voiceType && item.voiceType !== filters.voiceType) return false
     if (filters.priority && item.priority !== filters.priority) return false
     if (filters.category && item.category !== filters.category) return false
+    if (filters.contentType && item.contentType !== filters.contentType) return false
     return true
   })
 }

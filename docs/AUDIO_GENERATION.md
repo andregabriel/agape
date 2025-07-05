@@ -4,12 +4,43 @@
 
 O sistema de geração automática de áudios integra **OpenAI** para geração de texto e **ElevenLabs** para síntese de voz, permitindo criar conteúdo de áudio católico de alta qualidade de forma automatizada.
 
+## 🎯 **MAPEAMENTO COMPLETO - 69 THUMBNAILS**
+
+Sistema atualizado para gerar **1 áudio por thumbnail** da página `/home`, totalizando **69 elementos de conteúdo**.
+
+### 📊 **Contagem por Seção:**
+
+**Áudios/Playlists (64 itens):**
+- **Corpus Christi**: 4 thumbnails
+- **Destaques**: 3 thumbnails  
+- **Favoritas dos Assinantes**: 3 thumbnails
+- **Diárias com Convidados**: 3 thumbnails
+- **Rotinas Noturnas**: 3 thumbnails
+- **Rezadas Recentemente**: 3 thumbnails
+- **Músicas para Dormir**: 3 thumbnails
+- **Música**: 3 thumbnails
+- **Temáticas**: 3 thumbnails
+- **Novenas**: 3 thumbnails
+- **Histórias Bíblicas para Dormir**: 6 thumbnails
+- **Novo Testamento**: 6 thumbnails
+- **Não sabe por onde começar**: 6 thumbnails
+- **Rotinas Matinais**: 6 thumbnails
+- **Orações infantis**: 6 thumbnails
+- **Explore por Categorias**: 3 thumbnails
+
+**Banners/Cards Especiais (5 itens):**
+- **Challenge Banners**: 2 (Sagrado Coração + Contra Vício)
+- **Single Cards**: 2 (Reflita Evangelho + Minuto Homilia)
+- **Magisterium**: 1 banner
+
+**TOTAL: 69 ELEMENTOS DE CONTEÚDO**
+
 ## Arquitetura
 
 ### Componentes Principais
 
 1. **Content Mapping (`lib/content-mapping.ts`)**
-   - Mapeia todo o conteúdo da aplicação
+   - Mapeia TODOS os 69 thumbnails da página /home
    - Define tipos de voz (padre/storytelling)
    - Estabelece prioridades e categorias
    - Contém prompts personalizados para cada item
@@ -81,29 +112,37 @@ interface ContentItem {
   voiceType: 'padre' | 'storytelling'
   estimatedDuration?: string
   priority: 'high' | 'medium' | 'low'
-  contentType: 'audio' | 'playlist'
+  contentType: 'audio' | 'playlist' | 'banner'
   prompt?: string // Prompt personalizado para OpenAI
 }
 ```
 
-### Categorias Mapeadas
+### Categorias Mapeadas (Todas da /home)
 
-1. **Corpus Christi** (4 itens) - Voz de Padre
-2. **Destaques** (3 itens) - Voz de Padre  
-3. **Rotinas Matinais** (6 itens) - Voz de Padre
-4. **Favoritas dos Assinantes** (3 itens) - Voz de Padre
-5. **Rotinas Noturnas** (3 itens) - Voz de Padre
-6. **Histórias Bíblicas para Dormir** (6 itens) - Storytelling
-7. **Novo Testamento** (6 itens) - Storytelling
-8. **Não sabe por onde começar** (6 itens) - Padre/Storytelling
-9. **Temáticas** (3 itens) - Voz de Padre
-10. **Orações infantis** (6 itens) - Storytelling
-11. **Novenas** (3 itens) - Voz de Padre
-12. **Músicas para Dormir** (3 itens) - Voz de Padre
-13. **Música** (3 itens) - Storytelling/Padre
-14. **Rezadas Recentemente** (3 itens) - Voz de Padre
+1. **Sagrado Coração de Jesus** (1 banner)
+2. **Corpus Christi** (4 itens) - Voz de Padre
+3. **Contra o vício** (1 banner)
+4. **Destaques** (3 itens) - Voz de Padre  
+5. **Rotinas Matinais** (6 itens) - Voz de Padre
+6. **Favoritas dos Assinantes** (3 itens) - Voz de Padre
+7. **Termine de Rezar** (1 banner)
+8. **Diárias com Convidados** (3 itens) - Voz de Padre
+9. **Reflita sobre o Evangelho** (1 card)
+10. **Explore por Categorias** (3 itens) - Padre/Storytelling
+11. **Rotinas Noturnas** (3 itens) - Voz de Padre
+12. **Histórias Bíblicas para Dormir** (6 itens) - Storytelling
+13. **Rezadas Recentemente** (3 itens) - Voz de Padre
+14. **Músicas para Dormir** (3 itens) - Voz de Padre
+15. **Minuto de Homilia** (1 card)
+16. **Novo Testamento** (6 itens) - Storytelling
+17. **Música** (3 itens) - Storytelling/Padre
+18. **Não sabe por onde começar** (6 itens) - Padre/Storytelling
+19. **Temáticas** (3 itens) - Voz de Padre
+20. **Magisterium** (1 banner)
+21. **Orações infantis** (6 itens) - Storytelling
+22. **Novenas** (3 itens) - Voz de Padre
 
-**Total**: 58 itens mapeados (~25 horas de conteúdo estimado)
+**Total**: 69 itens mapeados (~35 horas de conteúdo estimado)
 
 ## Vozes Disponíveis
 
@@ -155,17 +194,18 @@ interface ContentItem {
 ## Estatísticas do Sistema
 
 ### Por Tipo de Voz
-- **Padre**: 42 itens (72%)
-- **Storytelling**: 16 itens (28%)
+- **Padre**: 55 itens (80%)
+- **Storytelling**: 14 itens (20%)
 
 ### Por Prioridade
-- **Alta**: 35 itens (60%)
-- **Média**: 18 itens (31%)
-- **Baixa**: 5 itens (9%)
+- **Alta**: 45 itens (65%)
+- **Média**: 20 itens (29%)
+- **Baixa**: 4 itens (6%)
 
 ### Por Tipo de Conteúdo
-- **Áudio**: 38 itens (66%)
-- **Playlist**: 20 itens (34%)
+- **Áudio**: 35 itens (51%)
+- **Playlist**: 29 itens (42%)
+- **Banner**: 5 itens (7%)
 
 ## Variáveis de Ambiente
 
@@ -206,10 +246,10 @@ AWS_S3_BUCKET=your_s3_bucket_name
 - ~$0.30 por 1K caracteres
 - Custo médio por áudio: $0.50-2.00
 
-### Total Estimado para 58 itens
-- OpenAI: ~$8-20
-- ElevenLabs: ~$30-120
-- **Total: ~$40-140**
+### Total Estimado para 69 itens
+- OpenAI: ~$10-25
+- ElevenLabs: ~$35-140
+- **Total: ~$45-165**
 
 ## Próximos Passos
 
