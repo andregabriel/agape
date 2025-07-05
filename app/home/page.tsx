@@ -17,6 +17,27 @@ import MagisteriumBanner from "@/components/home/magisterium-banner"
 import FinalSection from "@/components/home/final-section"
 
 // --- DADOS (Expandidos para atender aos mínimos) ---
+
+// DADOS PARA SEÇÃO TESTE - 2 áudios para validar o sistema
+const testeItems: AudioTrack[] = [
+  {
+    id: "teste_padre",
+    title: "Oração Matinal de Teste",
+    subCategory: "Teste com voz de padre",
+    duration: "3 min",
+    imageUrl: "/placeholder.svg?width=300&height=400",
+    type: "audio",
+  },
+  {
+    id: "teste_storytelling", 
+    title: "História Bíblica de Teste",
+    subCategory: "Teste com voz de storytelling",
+    duration: "2 min",
+    imageUrl: "/placeholder.svg?width=300&height=400",
+    type: "audio",
+  }
+]
+
 const corpusChristiItems: AudioTrack[] = [
   {
     id: "cc1",
@@ -583,6 +604,7 @@ const exploreCategoriesItems = [
 // --- FIM DOS DADOS ---
 
 const orderedCategories = [
+  "Teste",
   "Sagrado Coração de Jesus",
   "Corpus Christi",
   "Frase",
@@ -625,7 +647,7 @@ export default function NewHomePage() {
         categories={orderedCategories.filter(
           (cat) =>
             !["Sagrado Coração de Jesus", "Frase", "Contra o vício", "Termine de Rezar", "Magisterium"].includes(cat),
-        )} // Exclui categorias que não são filtros de conteúdo
+        )} // Exclui categorias que não são filtros de conteúdo mas inclui Teste
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
         onMenuToggle={() => setIsMenuOpen(true)}
@@ -639,7 +661,7 @@ export default function NewHomePage() {
         categories={orderedCategories.filter(
           (cat) =>
             !["Sagrado Coração de Jesus", "Frase", "Contra o vício", "Termine de Rezar", "Magisterium"].includes(cat),
-        )}
+        )} // Exclui categorias que não são filtros de conteúdo mas inclui Teste
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
       />
@@ -658,6 +680,11 @@ export default function NewHomePage() {
 const sections = [
   { id: "main-banner", category: "NÃO_FILTRAR", component: <MainBanner /> },
   { id: "quick-access", category: "NÃO_FILTRAR", component: <QuickAccessIcons /> },
+  {
+    id: "teste",
+    category: "Teste",
+    component: <HorizontalScrollSection title="🧪 Teste - Áudios Gerados por IA" items={testeItems} thumbnailVariant="lounge" />,
+  },
   {
     id: "challenge-sacred-heart",
     category: "Sagrado Coração de Jesus",
