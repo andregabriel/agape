@@ -19,10 +19,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }, [])
 
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body>
+    <html lang="pt-BR" suppressHydrationWarning className="app-background">
+      <head>
+        <link rel="icon" href="/images/agape-logo.svg" />
+        <link rel="apple-touch-icon" href="/images/agape-logo.svg" />
+      </head>
+      <body style={{ backgroundColor: '#F5F5F5' }}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <main className="relative min-h-screen w-screen bg-background font-sans text-foreground">
+          <main className="relative min-h-screen w-screen font-sans text-foreground" style={{ backgroundColor: '#F5F5F5' }}>
             {children}
           </main>
           {showBottomNav && <BottomNav />}
