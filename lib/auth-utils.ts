@@ -68,10 +68,9 @@ export async function playWithUserCheck(
   play(track, playlist, userType)
 }
 
-// Lista de emails de administradores
+// Lista de emails autorizados como administradores
 const ADMIN_EMAILS = [
-  'andrepvg@yahoo.com.br',
-  'andrepvgabriel@gmail.com'
+  'andrepvgabriel@gmail.com' // Email principal do administrador
 ]
 
 export function isAdmin(email: string | null | undefined): boolean {
