@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { 
   Music, 
   List, 
@@ -35,8 +36,11 @@ import {
   Settings,
   Save,
   Copy,
-  MoreHorizontal
+  MoreHorizontal,
+  Shield,
+  AlertTriangle
 } from "lucide-react"
+import { getCurrentUser, getCurrentUserIsAdmin } from '@/lib/auth-utils'
 
 import AutoGenerationManager from "@/components/admin/AutoGenerationManager"
 import ElevenLabsVoiceManager from "@/components/admin/ElevenLabsVoiceManager"
@@ -157,6 +161,40 @@ export default function AdminDashboard() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [bulkQuantity, setBulkQuantity] = useState(5)
   const [bulkType, setBulkType] = useState("")
+  const [user, setUser] = useState<any>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const currentUser = await getCurrentUser()
+        setUser(currentUser)
+        
+        if (!currentUser) {
+          // Redirect to login if not authenticated
+          window.location.href = '/login'
+          return
+        }
+        
+        const adminCheck = await getCurrentUserIsAdmin()
+        setIsAdmin(adminCheck)
+        
+        if (!adminCheck) {
+          // Redirect to home if not an admin
+          window.location.href = '/'
+          return
+        }
+        
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Erro na verificação de auth:', error)
+        window.location.href = '/login'
+      }
+    }
+    
+    checkAuth()
+  }, [])
 
   // Enhanced OpenAI Generation Functions
   const handleGenerateContent = async (type: string, quantity: number = 1) => {
@@ -186,13 +224,49 @@ export default function AdminDashboard() {
     alert(`${type} ID: ${id} movido para ${direction === 'up' ? 'cima' : 'baixo'}`)
   }
 
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verificando permissões...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show access denied if not admin
+  if (!isAdmin || !user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Acesso Negado</h1>
+          <p className="text-gray-600 mb-4">Apenas administradores podem acessar esta área.</p>
+          <Button onClick={() => window.location.href = '/'}>
+            Voltar ao Início
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Painel Administrativo</h1>
-          <p className="text-gray-600 mt-2">Gestão completa do conteúdo da plataforma Agape</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Painel Administrativo</h1>
+              <p className="text-gray-600 mt-2">Gestão completa do conteúdo da plataforma Agape</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Shield className="w-5 h-5 text-green-600" />
+              <span className="text-sm text-green-600 font-medium">Admin: {user.email}</span>
+            </div>
+          </div>
         </div>
 
         {/* Main Tabs */}

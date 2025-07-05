@@ -1,6 +1,8 @@
 'use server'
 
 import { ContentItem } from '@/lib/content-mapping'
+import { createClient } from '@/lib/supabase/server'
+import { isAdmin } from '@/lib/auth-utils'
 
 // Tipos para as respostas das APIs
 interface OpenAIResponse {
@@ -54,6 +56,22 @@ const VOICE_MAPPING = {
   'clara-narrativa': 'voice_id_4',
   'maria-contadora': 'voice_id_5',
   'jose-narrador': 'voice_id_6'
+}
+
+// Função para verificar se o usuário atual é admin (server-side)
+async function requireAdminAuth() {
+  const supabase = createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  if (error || !user || !user.email) {
+    throw new Error('Usuário não autenticado')
+  }
+  
+  if (!isAdmin(user.email)) {
+    throw new Error('Acesso negado: Apenas administradores podem gerar conteúdo')
+  }
+  
+  return user
 }
 
 // Função para gerar texto com OpenAI
@@ -177,6 +195,9 @@ export async function generateCompleteContent(
   config: GenerationConfig
 ): Promise<GenerationResult> {
   try {
+    // Verificar se usuário é admin
+    await requireAdminAuth()
+    
     // Passo 1: Gerar texto
     const textResult = await generateText(contentItem, config)
     if (!textResult.success || !textResult.text) {
@@ -223,6 +244,9 @@ export async function generateBatchContent(
   config: GenerationConfig,
   onProgress?: (progress: number, current: string) => void
 ): Promise<GenerationResult[]> {
+  // Verificar se usuário é admin
+  await requireAdminAuth()
+  
   const results: GenerationResult[] = []
   
   for (let i = 0; i < contentItems.length; i++) {
@@ -233,8 +257,8 @@ export async function generateBatchContent(
       onProgress((i / contentItems.length) * 100, item.title)
     }
     
-    // Gerar conteúdo
-    const result = await generateCompleteContent(item, config)
+    // Gerar conteúdo (sem verificação de admin novamente, já verificado acima)
+    const result = await generateCompleteContentInternal(item, config)
     results.push(result)
     
     // Pequena pausa para evitar rate limiting
@@ -242,6 +266,52 @@ export async function generateBatchContent(
   }
   
   return results
+}
+
+// Função interna sem verificação de admin (para uso em lote)
+async function generateCompleteContentInternal(
+  contentItem: ContentItem,
+  config: GenerationConfig
+): Promise<GenerationResult> {
+  try {
+    // Passo 1: Gerar texto
+    const textResult = await generateText(contentItem, config)
+    if (!textResult.success || !textResult.text) {
+      return {
+        success: false,
+        contentId: contentItem.id,
+        error: textResult.error || 'Falha na geração de texto'
+      }
+    }
+
+    // Passo 2: Determinar voz baseada no tipo
+    const voiceId = getVoiceForContent(contentItem)
+
+    // Passo 3: Gerar áudio
+    const audioResult = await generateAudio(textResult.text, voiceId, config)
+    if (!audioResult.success) {
+      return {
+        success: false,
+        contentId: contentItem.id,
+        generatedText: textResult.text,
+        error: audioResult.error || 'Falha na geração de áudio'
+      }
+    }
+
+    return {
+      success: true,
+      contentId: contentItem.id,
+      generatedText: textResult.text,
+      audioUrl: audioResult.audioUrl,
+      duration: audioResult.duration
+    }
+  } catch (error) {
+    return {
+      success: false,
+      contentId: contentItem.id,
+      error: `Erro na geração completa: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+    }
+  }
 }
 
 // Funções auxiliares
@@ -316,6 +386,9 @@ export async function testAPIConnections(): Promise<{
   elevenlabs: boolean
   errors: string[]
 }> {
+  // Verificar se usuário é admin
+  await requireAdminAuth()
+  
   const errors: string[] = []
   let openaiWorking = false
   let elevenlabsWorking = false
