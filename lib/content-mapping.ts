@@ -854,7 +854,14 @@ export const CONTENT_STATS = {
     const duration = item.estimatedDuration || "5 min"
     const minutes = parseInt(duration.split('-')[0]) || 5
     return total + minutes
-  }, 0) / 60
+  }, 0) / 60,
+  // CUSTOS REAIS CORRIGIDOS
+  estimatedCosts: {
+    openai: 0.60, // 60 centavos para 69 prompts simples
+    elevenlabs: 12, // ~$12 para 69k caracteres 
+    total: 12.60, // Custo total real: ~$13
+    note: "Custos para prompts simples baseados nos títulos/descrições existentes"
+  }
 }
 
 // Função para obter conteúdo por filtros
