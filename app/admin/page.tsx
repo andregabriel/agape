@@ -45,6 +45,9 @@ import { getCurrentUser, getCurrentUserIsAdmin } from '@/lib/auth-utils'
 import AutoGenerationManager from "@/components/admin/AutoGenerationManager"
 import ElevenLabsVoiceManager from "@/components/admin/ElevenLabsVoiceManager"
 import OpenAIContentGenerator from "@/components/admin/OpenAIContentGenerator"
+import ImageGenerator from "@/components/admin/ImageGenerator"
+import AudioManager from "@/components/admin/AudioManager"
+import PlaylistManager from "@/components/admin/PlaylistManager"
 
 // Enhanced mock data
 const mockAudios = [
@@ -271,7 +274,7 @@ export default function AdminDashboard() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="audios" className="flex items-center gap-2">
               <Music className="w-4 h-4" />
               Áudios
@@ -312,142 +315,20 @@ export default function AdminDashboard() {
               <Bot className="w-4 h-4" />
               OpenAI
             </TabsTrigger>
+            <TabsTrigger value="images" className="flex items-center gap-2">
+              <Image className="w-4 h-4" />
+              Imagens
+            </TabsTrigger>
           </TabsList>
 
           {/* Audios Management */}
           <TabsContent value="audios" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Gerenciar Áudios</CardTitle>
-                    <CardDescription>Adicione, edite e organize áudios da plataforma</CardDescription>
-                  </div>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Novo Áudio
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Search */}
-                  <div className="flex items-center space-x-2">
-                    <Search className="w-4 h-4 text-gray-400" />
-                    <Input 
-                      placeholder="Buscar áudios..." 
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="flex-1"
-                    />
-                  </div>
-
-                  {/* Audio List */}
-                  <div className="space-y-3">
-                    {mockAudios.map((audio) => (
-                      <div key={audio.id} className="flex items-center justify-between p-4 border rounded-lg bg-white">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex flex-col items-center">
-                            <Button variant="ghost" size="sm" onClick={() => handleReorder(audio.id, 'up', 'áudio')}>
-                              <ArrowUp className="w-4 h-4" />
-                            </Button>
-                            <GripVertical className="w-4 h-4 text-gray-400" />
-                            <Button variant="ghost" size="sm" onClick={() => handleReorder(audio.id, 'down', 'áudio')}>
-                              <ArrowDown className="w-4 h-4" />
-                            </Button>
-                          </div>
-                          <Play className="w-8 h-8 text-blue-600" />
-                          <div>
-                            <h3 className="font-medium">{audio.title}</h3>
-                            <p className="text-sm text-gray-500">{audio.category} • {audio.duration}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge variant={audio.status === 'published' ? 'default' : 'secondary'}>
-                            {audio.status === 'published' ? 'Publicado' : 'Rascunho'}
-                          </Badge>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleToggleVisibility(audio.id, 'áudio')}
-                          >
-                            {audio.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Copy className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <AudioManager />
           </TabsContent>
 
           {/* Playlists Management */}
           <TabsContent value="playlists" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Gerenciar Playlists</CardTitle>
-                    <CardDescription>Organize coleções de áudios em playlists temáticas</CardDescription>
-                  </div>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Nova Playlist
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {mockPlaylists.map((playlist) => (
-                    <Card key={playlist.id} className="relative">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="sm" onClick={() => handleReorder(playlist.id, 'up', 'playlist')}>
-                              <ArrowUp className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" onClick={() => handleReorder(playlist.id, 'down', 'playlist')}>
-                              <ArrowDown className="w-4 h-4" />
-                            </Button>
-                          </div>
-                          <div className="flex space-x-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleToggleVisibility(playlist.id, 'playlist')}
-                            >
-                              {playlist.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Copy className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        <h3 className="font-medium mb-2">{playlist.name}</h3>
-                        <p className="text-sm text-gray-500 mb-2">{playlist.audioCount} áudios</p>
-                        <Badge variant="outline">{playlist.category}</Badge>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <PlaylistManager />
           </TabsContent>
 
           {/* Categories Management */}
@@ -788,6 +669,24 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <OpenAIContentGenerator />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Images Tab */}
+          <TabsContent value="images" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Image className="w-6 h-6" />
+                  Gerador de Imagens
+                </CardTitle>
+                <CardDescription>
+                  Gere thumbnails automaticamente usando DALL-E da OpenAI
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ImageGenerator />
               </CardContent>
             </Card>
           </TabsContent>

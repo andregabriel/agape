@@ -1,20 +1,37 @@
 export interface AudioTrack {
   id: string
-  title: string
+  title: string // Obrigatório
   artist?: string
   duration: string
-  imageUrl: string
+  imageUrl: string // Obrigatório
+  audioUrl?: string // Arquivo de áudio em si - Obrigatório para áudios
   type: "audio" | "playlist"
   itemCount?: number
-  description?: string
+  description?: string // Opcional
+  subtitle?: string // Opcional
   category?: string
   subCategory?: string
+  link?: string
 }
 
 export interface Playlist extends AudioTrack {
   type: "playlist"
   tracks: AudioTrack[]
   itemCount: number
+  name: string // Nome da playlist - Obrigatório
+  audioList: string[] // Lista de IDs dos áudios que compõem a playlist
+}
+
+export interface Category {
+  id: string
+  name: string // Nome da categoria - Obrigatório
+  audioList: string[] // Lista de IDs dos áudios que compõem a categoria
+  playlistList: string[] // Lista de IDs das playlists que compõem a categoria
+  description?: string
+  color?: string
+  imageUrl?: string
+  order?: number
+  visible?: boolean
 }
 
 export interface Database {

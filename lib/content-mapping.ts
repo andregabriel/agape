@@ -24,7 +24,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "3 min",
     priority: "high",
     contentType: "audio",
-    elevenlabsVoiceId: "onwK4e9ZLuTAKqWW03F9", // Daniel - authoritative, middle-aged, British
+    elevenlabsVoiceId: "L0Dsvb3SLTyegXwtm47J", // Archer - grounded and friendly British male with charm
     prompt: "Crie uma breve oração matinal católica para testar a qualidade da voz, incluindo saudação e bênção"
   },
   {
@@ -36,7 +36,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "2 min",
     priority: "high",
     contentType: "audio",
-    elevenlabsVoiceId: "XrExE9yKIg1WjnnlVkGX", // Matilda - friendly, middle-aged, American
+    elevenlabsVoiceId: "g6xIsTj2HwM6VR4iXFCw", // Jessica Anne Bogart - empathetic and expressive, great for wellness coaches
     prompt: "Conte brevemente a história de Jesus acalmando a tempestade de forma envolvente para testar a qualidade narrativa"
   },
 
