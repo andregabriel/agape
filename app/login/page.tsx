@@ -74,7 +74,7 @@ export default function LoginPage() {
 
       <main className="flex-grow flex flex-col items-center justify-end pb-8 text-center">
         <div className="flex flex-col items-center">
-          <Image src="/images/agape-logo.png" alt="Agape Logo" width={280} height={70} priority />
+          <img src="/images/agape-logo.svg" alt="Agape Logo" width="280" height="70" />
         </div>
       </main>
 
