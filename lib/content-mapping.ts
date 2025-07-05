@@ -10,9 +10,36 @@ export interface ContentItem {
   priority: 'high' | 'medium' | 'low'
   contentType: 'audio' | 'playlist' | 'banner'
   prompt?: string // Prompt personalizado para OpenAI
+  elevenlabsVoiceId?: string // ID real da voz no ElevenLabs
 }
 
 export const ALL_CONTENT: ContentItem[] = [
+  // CATEGORIA TESTE - Para testar antes de gerar todos (2 itens)
+  {
+    id: "teste_padre",
+    title: "Oração Matinal de Teste",
+    subtitle: "Teste com voz de padre",
+    category: "Teste",
+    voiceType: "padre",
+    estimatedDuration: "3 min",
+    priority: "high",
+    contentType: "audio",
+    elevenlabsVoiceId: "onwK4e9ZLuTAKqWW03F9", // Daniel - authoritative, middle-aged, British
+    prompt: "Crie uma breve oração matinal católica para testar a qualidade da voz, incluindo saudação e bênção"
+  },
+  {
+    id: "teste_storytelling",
+    title: "História Bíblica de Teste",
+    subtitle: "Teste com voz de storytelling",
+    category: "Teste",
+    voiceType: "storytelling",
+    estimatedDuration: "2 min",
+    priority: "high",
+    contentType: "audio",
+    elevenlabsVoiceId: "XrExE9yKIg1WjnnlVkGX", // Matilda - friendly, middle-aged, American
+    prompt: "Conte brevemente a história de Jesus acalmando a tempestade de forma envolvente para testar a qualidade narrativa"
+  },
+
   // SAGRADO CORAÇÃO DE JESUS - Banner (1 item)
   {
     id: "scj_banner",
@@ -23,6 +50,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "10 min",
     priority: "high",
     contentType: "banner",
+    elevenlabsVoiceId: "onwK4e9ZLuTAKqWW03F9", // Daniel
     prompt: "Crie uma meditação sobre a devoção ao Sagrado Coração de Jesus, especificamente para o dia 6 da novena (14 de junho), incluindo orações e reflexões sobre o amor misericordioso de Cristo"
   },
 
@@ -36,6 +64,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "7-15 min",
     priority: "high",
     contentType: "audio",
+    elevenlabsVoiceId: "nPczCjzI2devNBz1zQrb", // Brian - deep, middle-aged, American
     prompt: "Crie uma homilia profunda sobre Santo Ambrósio de Milão e sua devoção ao Corpus Christi, incluindo ensinamentos patrísticos sobre a Eucaristia"
   },
   {
@@ -47,6 +76,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "8-11 min",
     priority: "high",
     contentType: "audio",
+    elevenlabsVoiceId: "onwK4e9ZLuTAKqWW03F9", // Daniel
     prompt: "Desenvolva uma meditação sobre o amor infinito de Deus presente na Sagrada Eucaristia, com base nos escritos dos santos"
   },
   {
@@ -58,6 +88,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "1 min",
     priority: "high",
     contentType: "audio",
+    elevenlabsVoiceId: "pqHfZKP75CvOlQylNhV4", // Bill - trustworthy, old, American
     prompt: "Crie uma oração de comunhão espiritual no estilo de Padre Pio, curta mas profundamente emotiva"
   },
   {
@@ -69,6 +100,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "60 min",
     priority: "medium", 
     contentType: "playlist",
+    elevenlabsVoiceId: "onwK4e9ZLuTAKqWW03F9", // Daniel
     prompt: "Crie uma playlist completa de adoração eucarística com orações, meditações e momentos de silêncio contemplativo"
   },
 
@@ -82,6 +114,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "15 min",
     priority: "high",
     contentType: "banner",
+    elevenlabsVoiceId: "nPczCjzI2devNBz1zQrb", // Brian
     prompt: "Desenvolva uma meditação sobre Santa Mônica como intercessora contra vícios, incluindo orações poderosas para libertação de dependências e fortalecimento espiritual"
   },
 
@@ -95,6 +128,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "20 min",
     priority: "high",
     contentType: "playlist",
+    elevenlabsVoiceId: "onwK4e9ZLuTAKqWW03F9", // Daniel
     prompt: "Crie novena de 9 dias para namorados baseada na vida de Santos Joaquim e Ana, com orações para relacionamentos puros"
   },
   {
@@ -106,6 +140,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "25 min",
     priority: "high",
     contentType: "playlist",
+    elevenlabsVoiceId: "nPczCjzI2devNBz1zQrb", // Brian
     prompt: "Desenvolva novena para casais cristãos focada no fortalecimento do matrimônio através da oração conjunta"
   },
   {
@@ -117,6 +152,7 @@ export const ALL_CONTENT: ContentItem[] = [
     estimatedDuration: "18 min",
     priority: "high",
     contentType: "playlist",
+    elevenlabsVoiceId: "pqHfZKP75CvOlQylNhV4", // Bill
     prompt: "Crie novena para pais orarem por seus filhos, inspirada na Sagrada Família"
   },
 
@@ -827,6 +863,46 @@ export const ALL_CONTENT: ContentItem[] = [
     prompt: "Crie novena mariana focada na pureza e virtudes de Nossa Senhora como modelo"
   }
 ]
+
+// Mapeamento de vozes reais do ElevenLabs
+export const ELEVENLABS_VOICES = {
+  // Vozes de Padre (masculinas, autoritárias)
+  padre: {
+    "onwK4e9ZLuTAKqWW03F9": { 
+      name: "Daniel", 
+      description: "Authoritative, middle-aged, British", 
+      useCase: "news, autoridade" 
+    },
+    "nPczCjzI2devNBz1zQrb": { 
+      name: "Brian", 
+      description: "Deep, middle-aged, American", 
+      useCase: "narration, profundidade" 
+    },
+    "pqHfZKP75CvOlQylNhV4": { 
+      name: "Bill", 
+      description: "Trustworthy, old, American", 
+      useCase: "narration, confiança" 
+    }
+  },
+  // Vozes de Storytelling (expressivas, narrativas)
+  storytelling: {
+    "XrExE9yKIg1WjnnlVkGX": { 
+      name: "Matilda", 
+      description: "Friendly, middle-aged, American", 
+      useCase: "narration, amigável" 
+    },
+    "cgSgspJ2msm6clMCkdW9": { 
+      name: "Jessica", 
+      description: "Expressive, young, American", 
+      useCase: "conversational, expressiva" 
+    },
+    "pFZP5JQG7iQjIQuC4Bku": { 
+      name: "Lily", 
+      description: "Warm, middle-aged, British", 
+      useCase: "narration, calorosa" 
+    }
+  }
+}
 
 // Estatísticas do conteúdo atualizado
 export const CONTENT_STATS = {

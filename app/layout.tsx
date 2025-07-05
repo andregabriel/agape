@@ -1,18 +1,31 @@
-import type React from "react"
 import type { Metadata } from "next"
-import ClientLayout from "./ClientLayout"
-import "./globals.css" // CORREÇÃO: Movido para o topo do arquivo.
+import { Inter } from "next/font/google"
+import "./globals.css"
+
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Ágape",
-  description: "Seu app de orações e meditações.",
+  title: "Ágape - Orações e Meditações",
+  description: "Seu app de orações e meditações católicas com áudios gerados por IA.",
   generator: "v0.dev",
+  icons: {
+    icon: "/images/agape-logo.svg",
+    apple: "/images/agape-logo.svg",
+  },
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
-  return <ClientLayout>{children}</ClientLayout>
+}) {
+  return (
+    <html lang="pt-BR" className="app-background">
+      <body className={`${inter.className} app-background`}>
+        <div className="app-background">
+          {children}
+        </div>
+      </body>
+    </html>
+  )
 }
