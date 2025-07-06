@@ -24,6 +24,8 @@ export default function PrePlayerPage({ params }: { params: { audioId: string } 
 
   const handlePlay = () => {
     play(audioData)
+    // Redirect to full player instead of showing mini player
+    router.push('/player')
   }
 
   return (
@@ -75,7 +77,7 @@ export default function PrePlayerPage({ params }: { params: { audioId: string } 
               onClick={handlePlay}
             >
               <Play className="mr-2 h-5 w-5 fill-background" />
-              Reproduzir Oração
+              Reproduzir Sessão
             </Button>
             <Button variant="secondary" className="w-full h-12 text-lg">
               <Bell className="mr-2 h-5 w-5" />

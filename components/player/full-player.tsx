@@ -14,7 +14,7 @@ export default function FullPlayer() {
   const isPlaying = status === "playing"
 
   return (
-    <div className="fixed inset-0 bg-[#E3F0EE] dark:bg-slate-900 z-[100] flex flex-col">
+    <div className="fixed inset-0 bg-slate-900 z-[100] flex flex-col">
       <div className="relative w-full h-1/2">
         <Image
           src={currentTrack.imageUrl || "/placeholder.svg?width=400&height=400&query=abstract+peace"}
@@ -23,7 +23,7 @@ export default function FullPlayer() {
           objectFit="cover"
           className="opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#E3F0EE] dark:from-slate-900 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
         <div className="absolute top-4 left-0 right-0 flex justify-center">
           <Button
             variant="ghost"
@@ -37,15 +37,15 @@ export default function FullPlayer() {
         </div>
       </div>
 
-      <div className="flex-grow flex flex-col justify-between p-6 text-slate-800 dark:text-white">
+      <div className="flex-grow flex flex-col justify-between p-6 text-white">
         <div className="text-center">
           <h2 className="text-2xl font-bold">{currentTrack.title}</h2>
-          <p className="text-lg text-slate-600 dark:text-slate-300">{currentTrack.description || "Meditação Cristã"}</p>
+                      <p className="text-lg text-slate-300">{currentTrack.description || "Meditação Cristã"}</p>
         </div>
 
         <div>
           <Slider defaultValue={[37]} max={600} step={1} className="my-4" />
-          <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex justify-between text-xs text-slate-400">
             <span>00:37</span>
             <span>-09:22</span>
           </div>
@@ -57,7 +57,7 @@ export default function FullPlayer() {
           </Button>
           <Button
             size="icon"
-            className="w-20 h-20 rounded-full bg-slate-800 dark:bg-white text-white dark:text-slate-900 shadow-lg"
+            className="w-20 h-20 rounded-full bg-white text-slate-900 shadow-lg"
             onClick={isPlaying ? pause : resume}
           >
             {isPlaying ? (
@@ -71,7 +71,7 @@ export default function FullPlayer() {
           </Button>
         </div>
 
-        <div className="flex justify-around items-center text-slate-600 dark:text-slate-300">
+        <div className="flex justify-around items-center text-slate-300">
           <Button variant="ghost" size="icon">
             <Upload className="w-6 h-6" />
           </Button>

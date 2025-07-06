@@ -10,6 +10,7 @@ import ChallengeBanner from "@/components/home/challenge-banner"
 import HorizontalScrollSection from "@/components/home/horizontal-scroll-section"
 import QuoteSection from "@/components/home/quote-section"
 import type { AudioTrack } from "@/types"
+import { getImageUrl } from "@/lib/image-mapping"
 import SingleCardFeature from "@/components/home/single-card-feature"
 import ExploreCategoryCard from "@/components/home/explore-category-card"
 import HorizontalGridScrollSection from "@/components/home/horizontal-grid-scroll-section"
@@ -25,7 +26,7 @@ const testeItems: AudioTrack[] = [
     title: "Oração Matinal de Teste",
     subCategory: "Teste com voz de padre",
     duration: "3 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: getImageUrl("teste_padre"),
     type: "audio",
   },
   {
@@ -33,7 +34,7 @@ const testeItems: AudioTrack[] = [
     title: "História Bíblica de Teste",
     subCategory: "Teste com voz de storytelling",
     duration: "2 min",
-    imageUrl: "/placeholder.svg?width=300&height=400",
+    imageUrl: getImageUrl("teste_storytelling"),
     type: "audio",
   }
 ]
