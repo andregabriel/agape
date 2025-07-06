@@ -27,6 +27,32 @@
 - All testing and verification happens on deployed app
 - Always reference deployed URL when showing features
 
+### ENVIRONMENT VARIABLES (VERCEL)
+
+**Available variables in production:**
+- `ELEVENLABS_API_KEY` - ElevenLabs voice synthesis API
+- `OPENAI_API_KEY` - OpenAI GPT-4 and DALL-E API
+- `NEXT_PUBLIC_SITE_URL` - Public site URL
+- `POSTGRES_URL` - PostgreSQL database connection
+- `POSTGRES_PRISMA_URL` - Prisma PostgreSQL connection
+- `SUPABASE_URL` - Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase URL
+- `POSTGRES_URL_NON_POOLING` - Non-pooling PostgreSQL URL
+- `SUPABASE_JWT_SECRET` - Supabase JWT secret key
+- `POSTGRES_USER` - PostgreSQL username
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Public Supabase anonymous key
+- `POSTGRES_PASSWORD` - PostgreSQL password
+- `POSTGRES_DATABASE` - PostgreSQL database name
+- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
+- `POSTGRES_HOST` - PostgreSQL host
+- `SUPABASE_ANON_KEY` - Supabase anonymous key
+
+**Usage Notes:**
+- Use these exact variable names in code
+- NEXT_PUBLIC_* variables are client-side accessible
+- All others are server-side only
+- Never hardcode API keys or secrets
+
 ### VIOLATION IMPACT
 
 - User loses hours of work
