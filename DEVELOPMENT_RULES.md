@@ -20,6 +20,13 @@
 - Add new code alongside existing
 - Use composition over modification
 
+### DEPLOYMENT CONTEXT
+
+- **IMPORTANT**: User does NOT use localhost
+- User only sees changes after deploy to Vercel
+- All testing and verification happens on deployed app
+- Always reference deployed URL when showing features
+
 ### VIOLATION IMPACT
 
 - User loses hours of work
