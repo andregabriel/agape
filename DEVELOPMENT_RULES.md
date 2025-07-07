@@ -29,7 +29,7 @@
 
 ### ENVIRONMENT VARIABLES (VERCEL)
 
-**Available variables in production:**
+**Available variables in production (configured in Vercel):**
 - `ELEVENLABS_API_KEY` - ElevenLabs voice synthesis API
 - `OPENAI_API_KEY` - OpenAI GPT-4 and DALL-E API
 - `NEXT_PUBLIC_SITE_URL` - Public site URL
@@ -46,6 +46,17 @@
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
 - `POSTGRES_HOST` - PostgreSQL host
 - `SUPABASE_ANON_KEY` - Supabase anonymous key
+
+**Additional variables available (need to be added to Vercel if required):**
+- `NEXT_PUBLIC_LOGTAIL_SOURCE_TOKEN` - Logtail logging service
+- `STRIPE_PUBLIC_KEY` - Stripe public key for payments
+- `STRIPE_SECRET_KEY` - Stripe secret key for payments
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+- `STRIPE_ANNUAL_PRODUCT_ID` - Stripe annual subscription product
+- `STRIPE_ANNUAL_PRICE_ID` - Stripe annual subscription price
+- `STRIPE_MONTHLY_PRODUCT_ID` - Stripe monthly subscription product
+- `STRIPE_MONTHLY_PRICE_ID` - Stripe monthly subscription price
 
 **Usage Notes:**
 - Use these exact variable names in code
