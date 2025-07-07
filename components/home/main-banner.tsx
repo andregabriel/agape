@@ -5,7 +5,7 @@ import Link from "next/link"
 export default function MainBanner() {
   // Placeholder data
   const banner = {
-    imageUrl: "/images/home/01-header-banner-icons.jpeg",
+    imageUrl: "/images/banners/terco-diario-sabado.png",
     category: "Terço",
     title: "Terço Diário - Sábado",
     subtitle: "Mistérios Gozosos",
