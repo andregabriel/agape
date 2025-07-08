@@ -21,6 +21,7 @@ interface PlayerState {
   closePlayer: () => void
   openPaymentModal: (audioTitle?: string) => void
   closePaymentModal: () => void
+  prepare: (track: AudioTrack, playlist?: (AudioTrack | Playlist)[], userType?: 'guest' | 'authenticated') => void
 }
 
 export const usePlayerStore = create<PlayerState>((set) => ({
@@ -32,6 +33,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   paymentAudioTitle: null,
 
   play: (track, playlist = [], userType = 'authenticated') => {
+    console.log("Tentando reproduzir:", track.title, "audioUrl:", track.audioUrl)
+    
     // Se for convidado, mostra modal de pagamento ao invés de reproduzir
     if (userType === 'guest') {
       set({
@@ -50,8 +53,14 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     })
   },
 
-  pause: () => set({ status: "paused" }),
-  resume: () => set({ status: "playing" }),
+  pause: () => {
+    console.log("Pausando áudio...")
+    set({ status: "paused" })
+  },
+  resume: () => {
+    console.log("Retomando áudio...")
+    set({ status: "playing" })
+  },
 
   showPlayer: () => set((state) => ({ view: state.view === "hidden" ? "mini" : state.view })),
   hidePlayer: () => set({ view: "hidden", status: "stopped", currentTrack: null }),
@@ -61,4 +70,16 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   openPaymentModal: (audioTitle) => set({ showPaymentModal: true, paymentAudioTitle: audioTitle }),
   closePaymentModal: () => set({ showPaymentModal: false, paymentAudioTitle: null }),
+
+  prepare: (track, playlist = [], userType = 'authenticated') => {
+    console.log("Preparando player:", track.title, "audioUrl:", track.audioUrl)
+    
+    // Prepara o player mas não inicia a reprodução
+    set({
+      currentTrack: track,
+      playlist: playlist.length > 0 ? playlist : [track],
+      status: "paused",
+      view: "mini",
+    })
+  },
 }))

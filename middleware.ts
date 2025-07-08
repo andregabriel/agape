@@ -14,9 +14,16 @@ export async function middleware(request: NextRequest) {
 
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
-  // Se o usuário não estiver logado e tentar acessar uma rota protegida, redireciona para /login
+  // Novo: Permitir acesso a rotas protegidas para qualquer sessão (autenticada ou anônima)
   if (!session && isProtectedRoute) {
+    console.log("[middleware] Sem sessão, redirecionando para /login")
     return NextResponse.redirect(new URL("/login", request.url))
+  }
+
+  // Log do tipo de usuário para depuração
+  if (session) {
+    const isAnonymous = session.user?.is_anonymous
+    console.log(`[middleware] Sessão detectada. Usuário anônimo? ${isAnonymous}`)
   }
 
   // Se o usuário estiver logado e tentar acessar a página de login ou a raiz, redireciona para /home
@@ -34,14 +41,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Corresponde a todas as rotas de solicitação, exceto as que começam com:
-     * - _next/static (arquivos estáticos)
-     * - _next/image (otimização de imagem)
-     * - favicon.ico (arquivo de favicon)
-     * - images/ (arquivos de imagem)
-     * - auth/ (rotas de autenticação)
-     */
     "/((?!_next/static|_next/image|favicon.ico|images|auth).*)",
   ],
 }

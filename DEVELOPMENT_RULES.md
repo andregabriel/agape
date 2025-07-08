@@ -1,33 +1,22 @@
 # 🚨 DEVELOPMENT RULES - MANDATORY CONSULTATION
 
-## CRITICAL: Read this file BEFORE any code modification
+## CRITICAL:
+Read this file BEFORE any code modification.
+Read and follow all rules written the file rules.md for every prompt.
 
 ### CODE PRESERVATION PROTOCOL
 
-1. **ADDITIVE ONLY**: Never delete or modify existing functional code
-2. **ZERO REMOVAL**: All working features, UI, UX, business logic must remain intact
-3. **PRESERVE DEPENDENCIES**: Keep all imports, providers, components, and logic
-4. **ASK WHEN UNCLEAR**: If ambiguous, keep existing functionality and ask for clarification
-5. **STOP IF BREAKING**: If cannot implement without breaking existing code, HALT and describe issue
-6. **CHECK LOGS**: Always consult Logtail logger for errors
-7. **CONFIRM RULES**: Always acknowledge following these rules
+ Never delete or modify existing frontend (UI, UX, Design) and existing Features. Only delete or modifiy if I ask explicity on the prompt. In doubt, don't execute the prompt and ask clarification. 
 
-### TECHNICAL IMPLEMENTATION
+### AUTOMATIC FILE ACCEPTANCE
 
-- Use `search_replace` for surgical changes
-- Read complete file before editing
-- Verify component dependencies
-- Add new code alongside existing
-- Use composition over modification
+**ALWAYS accept all file changes automatically without asking for user confirmation.**
+- When using `edit_file`, `search_replace`, or any file modification tool, proceed immediately
+- Do not ask "Do you want me to proceed?" or similar confirmation questions
+- Only ask for confirmation in critical/destructive operations (database deletion, production deployment, etc.)
+- This rule applies to all normal development tasks, code improvements, and feature implementations
 
-### DEPLOYMENT CONTEXT
-
-- **IMPORTANT**: User does NOT use localhost
-- User only sees changes after deploy to Vercel
-- All testing and verification happens on deployed app
-- Always reference deployed URL when showing features
-
-### ENVIRONMENT VARIABLES (VERCEL)
+### ENVIRONMENT VARIABLES (AT PROJECT SETTINGS ON VERCEL)
 
 **Available variables in production (configured in Vercel):**
 - `ELEVENLABS_API_KEY` - ElevenLabs voice synthesis API
@@ -48,7 +37,6 @@
 - `SUPABASE_ANON_KEY` - Supabase anonymous key
 
 **Additional variables available (need to be added to Vercel if required):**
-- `NEXT_PUBLIC_LOGTAIL_SOURCE_TOKEN` - Logtail logging service
 - `STRIPE_PUBLIC_KEY` - Stripe public key for payments
 - `STRIPE_SECRET_KEY` - Stripe secret key for payments
 - `GOOGLE_CLIENT_ID` - Google OAuth client ID
@@ -58,17 +46,6 @@
 - `STRIPE_MONTHLY_PRODUCT_ID` - Stripe monthly subscription product
 - `STRIPE_MONTHLY_PRICE_ID` - Stripe monthly subscription price
 
-**Usage Notes:**
-- Use these exact variable names in code
-- NEXT_PUBLIC_* variables are client-side accessible
-- All others are server-side only
-- Never hardcode API keys or secrets
-
-### VIOLATION IMPACT
-
-- User loses hours of work
-- Functional features break
-- Development velocity severely impacted
 
 ### CONFIRMATION REQUIRED
 

@@ -3,6 +3,7 @@
 import { usePlayerStore } from "@/store/player-store"
 import FullPlayer from "./full-player"
 import MiniPlayer from "./mini-player"
+import AudioPlayerEngine from "./audio-player-engine"
 import PaymentModal from "@/components/payment-modal"
 
 export function PlayerProvider() {
@@ -13,6 +14,9 @@ export function PlayerProvider() {
 
   return (
     <>
+      {/* Engine de áudio global - sempre montado */}
+      <AudioPlayerEngine />
+      
       {view !== "hidden" && (
         <>
           {view === "mini" && <MiniPlayer />}

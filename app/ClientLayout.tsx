@@ -7,7 +7,6 @@ import BottomNav from "@/components/bottom-nav"
 import { PlayerProvider } from "@/components/player/player-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
-import { initializeLogger } from "@/lib/logger"
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -15,7 +14,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     // Initialize the logger only on the client side when the app mounts.
-    initializeLogger()
   }, [])
 
   return (

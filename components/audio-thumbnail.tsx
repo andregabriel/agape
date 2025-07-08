@@ -2,13 +2,20 @@ import Image from "next/image"
 import Link from "next/link"
 import type { AudioTrack } from "@/types"
 import { PlayCircle } from "lucide-react"
+import { getAudioMapping } from "@/lib/audio-mapping"
 
 interface AudioThumbnailProps {
   item: AudioTrack
 }
 
 export default function AudioThumbnail({ item }: AudioThumbnailProps) {
-  const linkHref = item.type === "playlist" ? `/playlist/${item.id}` : `/pre-player/${item.id}`
+  // Obter o mapeamento real do Supabase
+  const audioMapping = getAudioMapping(item.id)
+  
+  // Usar o ID real do Supabase se disponível, senão usar o ID da home
+  const realId = audioMapping?.supabaseId || item.id
+  
+  const linkHref = item.type === "playlist" ? `/playlist/${realId}` : `/pre-player/${realId}`
 
   const getMetaText = () => {
     if (item.type === "playlist" && item.itemCount) {
