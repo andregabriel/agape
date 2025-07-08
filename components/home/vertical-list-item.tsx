@@ -23,7 +23,7 @@ export default function VerticalListItem({ item }: VerticalListItemProps) {
       className="flex items-center p-3 bg-card rounded-lg shadow-sm hover:bg-muted transition-colors"
     >
       <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-md overflow-hidden mr-4 shrink-0">
-        <Image src={item.imageUrl || "/placeholder.svg"} alt={item.title} layout="fill" objectFit="cover" />
+        <Image src={item.imageUrl || "/placeholder.svg"} alt={item.title} fill style={{ objectFit: "cover" }} />
       </div>
       <div className="flex-grow">
         <h3 className="font-semibold text-base md:text-lg leading-tight">{item.title}</h3>

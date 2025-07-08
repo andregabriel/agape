@@ -37,7 +37,7 @@ export default function ChurchLaunchCard({
         </Button>
       )}
       <div className="relative w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-foreground/10 shadow-md">
-        <Image src={imageUrl || "/placeholder.svg"} alt="Church Image" layout="fill" objectFit="cover" />
+        <Image src={imageUrl || "/placeholder.svg"} alt="Church Image" fill style={{ objectFit: "cover" }} />
       </div>
       <h3 className="text-xl font-bold text-foreground mb-1.5">{title}</h3>
       <p className="text-sm text-muted-foreground mb-4">{subtitle}</p>

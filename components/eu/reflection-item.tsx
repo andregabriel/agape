@@ -18,7 +18,7 @@ export default function ReflectionItem({ id, text, date, imageUrl, link }: Refle
       </div>
       {imageUrl && (
         <div className="relative w-10 h-10 rounded-md overflow-hidden ml-3 flex-shrink-0">
-          <Image src={imageUrl || "/placeholder.svg"} alt="Reflexão" layout="fill" objectFit="cover" />
+          <Image src={imageUrl || "/placeholder.svg"} alt="Reflexão" fill style={{ objectFit: "cover" }} />
         </div>
       )}
     </Link>

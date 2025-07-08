@@ -37,7 +37,7 @@ export default function ChallengeBanner({
           href={link}
           className="block relative aspect-video md:aspect-[16/7] group rounded-lg overflow-hidden shadow-lg"
         >
-          <Image src={imageUrl || "/placeholder.svg"} alt={primaryText} layout="fill" objectFit="cover" />
+          <Image src={imageUrl || "/placeholder.svg"} alt={primaryText} fill style={{ objectFit: "cover" }} />
           <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent`} />
 
           {(prayingCount || daysRemaining) && (

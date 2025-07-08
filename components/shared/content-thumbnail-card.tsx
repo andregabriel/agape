@@ -37,8 +37,8 @@ export default function ContentThumbnailCard({
         <Image
           src={imageUrl || "/placeholder.svg?width=160&height=160&query=content+art"}
           alt={title}
-          layout="fill" // Usar layout="fill" para preencher o aspect ratio
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           className="transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

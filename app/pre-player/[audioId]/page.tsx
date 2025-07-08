@@ -138,8 +138,8 @@ export default function PrePlayerPage({ params }: { params: Promise<{ audioId: s
         <Image
           src={audioData.imageUrl || "/placeholder.svg"}
           alt={audioData.title}
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           className="opacity-90"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />

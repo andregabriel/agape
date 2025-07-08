@@ -31,7 +31,7 @@ export default function GridSection({ title, items }: GridSectionProps) {
               className="flex items-start p-3 bg-card rounded-lg shadow-sm hover:bg-muted transition-colors"
             >
               <div className="relative w-16 h-16 rounded-md overflow-hidden mr-3 shrink-0">
-                <Image src={item.imageUrl || "/placeholder.svg"} alt={item.title} layout="fill" objectFit="cover" />
+                <Image src={item.imageUrl || "/placeholder.svg"} alt={item.title} fill style={{ objectFit: "cover" }} />
               </div>
               <div className="flex-grow">
                 <h3 className="font-semibold text-sm leading-tight">{item.title}</h3>

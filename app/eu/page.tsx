@@ -1,15 +1,18 @@
-"use client" // Adicionando 'use client' para interatividade futura
+"use client"
 
+import { useEffect, useState } from "react"
 import ProfileHeader from "@/components/eu/profile-header"
 import StreakSection from "@/components/eu/streak-section"
 import RoutineSection from "@/components/eu/routine-section"
-import HorizontalContentScroll from "@/components/shared/horizontal-content-scroll" // Componente compartilhado
+import HorizontalContentScroll from "@/components/shared/horizontal-content-scroll"
 import TitledSection from "@/components/shared/titled-section"
 import IntentionsList from "@/components/eu/intentions-list"
 import ReflectionsList from "@/components/eu/reflections-list"
-import type { ContentCardItemProps } from "@/components/shared/content-thumbnail-card" // Tipo compartilhado
+import AdminSection from "@/components/eu/admin-section"
+import type { ContentCardItemProps } from "@/components/shared/content-thumbnail-card"
 import type { IntentionItemProps } from "@/components/eu/intention-item"
 import type { ReflectionItemProps } from "@/components/eu/reflection-item"
+import { isUserAdmin, getCurrentUser, type AdminUser } from "@/lib/admin-utils"
 
 // Placeholder data
 const userData = {
@@ -52,7 +55,7 @@ const recentlyPlayedItems: ContentCardItemProps[] = [
     id: "rp3",
     title: "Imitação de Cristo",
     subtitle: "com Juliano Cazarré",
-    details: "100 sessões", // Corrigido da imagem
+    details: "100 sessões",
     imageUrl: "/placeholder.svg?width=160&height=160",
     link: "/audio/imitacao-cristo-jc",
   },
@@ -97,6 +100,41 @@ const reflections: ReflectionItemProps[] = [
 ]
 
 export default function ProfilePage() {
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null)
+  const [isAdminExpanded, setIsAdminExpanded] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function checkAdminStatus() {
+      try {
+        const adminStatus = await isUserAdmin()
+        setIsAdmin(adminStatus)
+        
+        if (adminStatus) {
+          const user = await getCurrentUser()
+          setAdminUser(user)
+        }
+      } catch (error) {
+        console.error('Error checking admin status:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    checkAdminStatus()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-lg">Carregando...</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <ProfileHeader
@@ -106,6 +144,16 @@ export default function ProfilePage() {
         onSettingsClick={() => console.log("Settings clicked")}
       />
       <main className="flex-grow overflow-y-auto pb-20 space-y-6">
+        {/* Admin Section - Only shown to admins */}
+        {isAdmin && (
+          <div className="px-4">
+            <AdminSection
+              isExpanded={isAdminExpanded}
+              onToggle={() => setIsAdminExpanded(!isAdminExpanded)}
+            />
+          </div>
+        )}
+        
         <StreakSection
           count={streakData.count}
           message={streakData.message}

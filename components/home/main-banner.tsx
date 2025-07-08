@@ -14,7 +14,7 @@ export default function MainBanner() {
 
   return (
     <Link href={banner.link} className="block relative aspect-[4/3] md:aspect-video group">
-      <Image src={banner.imageUrl || "/placeholder.svg"} alt={banner.title} layout="fill" objectFit="cover" priority />
+      <Image src={banner.imageUrl || "/placeholder.svg"} alt={banner.title} fill style={{ objectFit: "cover" }} priority />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="bg-white/90 rounded-full p-3 md:p-4 shadow-lg">

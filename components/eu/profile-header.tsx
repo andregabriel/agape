@@ -16,7 +16,7 @@ export default function ProfileHeader({ name, fullName, avatarUrl, onSettingsCli
     <header className="sticky top-0 z-40 flex items-center justify-between p-4 bg-background border-b">
       <div className="flex items-center space-x-3">
         <div className="relative w-12 h-12 rounded-full overflow-hidden">
-          <Image src={avatarUrl || "/placeholder.svg"} alt={name} layout="fill" objectFit="cover" />
+          <Image src={avatarUrl || "/placeholder.svg"} alt={name} fill style={{ objectFit: "cover" }} />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-foreground">{name}</h1>
